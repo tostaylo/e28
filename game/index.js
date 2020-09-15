@@ -5,7 +5,7 @@
 
 const guessed = [];
 let counter = 0;
-let secretWord = '';
+let secretWord = [];
 
 function timeout(ms) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
