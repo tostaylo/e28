@@ -8,11 +8,34 @@
 	</head>
 
 	<body>
+		<style>
+			body {
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-start;
+				align-items: center;
+				background: lightgray;
+			}
+
+			p {
+				margin: 50px 0;
+				display: inline-block;
+			}
+
+			span {
+				margin-right: 10px;
+				font-size: 50px;
+			}
+		</style>
 		<header><h1>Guess the Word!</h1></header>
 		<div id="secretWord"></div>
-		<div><span id="strikes">6</span><span>Attempts Remaining</span></div>
+
 		<div>
-			<label for="guess">Guess </label>
+			<p id="strikes">6</p>
+			<p>Attempts Remaining</p>
+		</div>
+		<div>
+			<label for="guess">Guess a Letter </label>
 			<input maxlength="1" id="guess" type="text" />
 			<button id="submit">Submit</button>
 		</div>
