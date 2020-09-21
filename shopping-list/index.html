@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Shopping List</title>
+		<script src="https://unpkg.com/vue"></script>
+	</head>
+	<body>
+		<div id="app">
+			<h1>Shopping List</h1>
+			<label>Item: <input id="input" type="text" /> <button v-on:click="addToList">Add</button></label>
+			<div>Item Count: {{list.length}}</div>
+			<ul>
+				<li v-for="item in list">{{ item }}</li>
+			</ul>
+		</div>
+
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					list: [],
+				},
+				methods: {
+					addToList: function () {
+						const input = document.getElementById('input');
+						if (input.value) {
+							this.list.push(input.value);
+							input.value = '';
+						}
+					},
+				},
+			});
+		</script>
+	</body>
+</html>
