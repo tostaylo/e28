@@ -7,10 +7,14 @@
 	<body>
 		<div id="app">
 			<h1>Shopping List</h1>
-			<label>Item: <input v-model="item" type="text" /> <button v-on:click="addToList">Add</button></label>
+			<label>Qty: <input v-on:keyup.enter="addToList" v-model="qty" type="number" /></label>
+			<label
+				>Item: <input v-on:keyup.enter="addToList" v-model="item" type="text" />
+				<button v-on:click="addToList">Add</button></label
+			>
 			<div>Item Count: {{list.length}}</div>
 			<ul>
-				<li v-for="item in list">{{ item }}</li>
+				<li v-for="item in list">{{ item[0] }} x {{ item[1] }}</li>
 			</ul>
 		</div>
 
@@ -20,11 +24,13 @@
 				data: {
 					list: [],
 					item: '',
+					qty: 1,
 				},
 				methods: {
 					addToList: function () {
-						this.list.push(this.item);
+						this.list.push([this.qty, this.item]);
 						this.item = '';
+						this.qty = 1;
 					},
 				},
 			});
