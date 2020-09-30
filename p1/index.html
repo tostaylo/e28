@@ -8,10 +8,22 @@
 		<div id="app"></div>
 
 		<script>
+			Vue.component('guess-input', {
+				props: ['guess'],
+				template: `<input v-bind:value="guess" v-on:keyup.enter="$emit('enter')" v-on:input="$emit('input', $event.target.value)" type="text"></input>`,
+			});
 			var app = new Vue({
 				el: '#app',
-				data: {},
-				methods: {},
+				data: { guess: '', guesses: [], secretWord: 'sleep' },
+				methods: {
+					calculateGuess: function () {
+						this.guesses.push(this.guess);
+						this.guess = '';
+					},
+				},
+				template: `<div>
+			                 <guess-input v-on:enter="calculateGuess" v-on:input="guess = $event" v-model="guess"></guess-input>
+			              </div>`,
 			});
 		</script>
 	</body>
