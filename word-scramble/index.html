@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Word Scramble</title>
+		<script src="https://unpkg.com/vue"></script>
+	</head>
+	<body>
+		<div id="app"></div>
+		<script>
+			var app = new Vue({
+				el: '#app',
+				data: {
+					inputVal: '',
+					name: '',
+					mysteryWords: [['howdy', 'this is a howdy hint']],
+					gameState: { won: false, lost: false },
+					guesses: [],
+				},
+				methods: {
+					startGame() {
+						this.name = this.inputVal;
+						this.inputVal = '';
+					},
+					submitGuess() {
+						if (this.inputVal == this.mysteryWords[0][0]) {
+							this.gameState = { won: true, lost: false };
+						} else {
+						}
+						this.guesses.push(this.inputVal);
+						this.inputVal = '';
+					},
+				},
+				computed: {
+					label: function () {
+						return this.name ? 'Guess Word' : 'Name';
+					},
+					submitFn: function () {
+						return this.name ? this.submitGuess : this.startGame;
+					},
+
+					guessMessage: function () {
+						return this.gameState.won ? 'You Won' : 'Please Try Again';
+					},
+				},
+				template: `
+			<div class="main">
+			  <h1>Word Scramble</h1>
+			  <div v-if="name">
+			      <p> Welcome {{name}}</p>
+			      <div><strong>{{mysteryWords[0][0]}}</strong></div>
+			      <p>{{mysteryWords[0][1]}}</p>
+			  </div>
+			      <label>{{label}}
+			        <input type="text" v-on:keyup.enter="submitFn" v-model="inputVal"/>
+			      </label>
+            <div v-show="guesses.length > 0">
+            <span>{{guessMessage}}</span>
+            </div>
+			</div>`,
+			});
+		</script>
+	</body>
+</html>
