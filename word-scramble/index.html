@@ -15,6 +15,18 @@
 			}
 		</style>
 		<script>
+
+     Vue.component('guess-message',
+
+{
+props:['gameState', 'guesses'],
+template:`<div v-show="guesses.length > 0">
+			           <span v-bind:class="{won: gameState.won, lost: !gameState.won}"><slot></slot></span>
+			           <button v-show="gameState.won || gameState.lost" @click="$emit('reset-state')"> Play again </button>
+			           </div>` 
+})
+
+
 			var app = new Vue({
 				el: '#app',
 				data: function () {
@@ -76,10 +88,13 @@
 					      <label>{{label}}
 					        <input v-show="gameState.won === null || gameState.lost === null" type="text" v-on:keyup.enter="submitFn" v-model="inputVal"/>
 					      </label>
-			           <div v-show="guesses.length > 0">
-			           <span v-bind:class="{won: gameState.won, lost: !gameState.won}">{{guessMessage}}</span>
-			           <button v-show="gameState.won || gameState.lost" @click="resetState"> Play again </button>
-			           </div>
+			      <guess-message
+              v-on:reset-state='resetState' 
+              v-bind:gameState='gameState' 
+              v-bind:guesses='guesses'
+            >
+            {{guessMessage}}
+            </guess-message>
 					</div>`,
 			});
 		</script>
