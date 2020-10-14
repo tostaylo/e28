@@ -10,19 +10,40 @@
 		<script>
 			Vue.component('guess-input', {
 				props: ['guess'],
-				template: `<input v-bind:value="guess" v-on:keyup.enter="$emit('enter')" v-on:input="$emit('input', $event.target.value)" type="text"></input>`,
+				template: `<input v-bind:value="guess" v-on:keyup.enter="$emit('enter')" v-on:input="$emit('typing', $event.target.value)" type="text"></input>`,
 			});
 			var app = new Vue({
 				el: '#app',
-				data: { guess: '', guesses: [], secretWord: 'sleep' },
+				data: { guess: '', guesses: [], secretWord: ['s', 'l'], gameState: { won: null } },
 				methods: {
 					calculateGuess: function () {
 						this.guesses.push(this.guess);
 						this.guess = '';
+						const hasWon = this.secretWord.every((letter) => this.guesses.includes(letter));
+						if (hasWon) {
+							//you won
+							this.gameState = { won: true };
+						} else if (this.guesses.length >= 6) {
+							// you lost
+							this.gameState = { won: false };
+						}
 					},
 				},
+				computed: {
+					revealLetter() {
+						return this.secretWord.map((letter) => (this.guesses.includes(letter) ? letter : '_'));
+					},
+					guessesLeft() {
+						return 6 - this.guesses.length;
+					},
+				},
+
 				template: `<div>
-			                 <guess-input v-on:enter="calculateGuess" v-on:input="guess = $event" v-model="guess"></guess-input>
+			                    <div>
+			                      <span v-for="letter in revealLetter">{{letter}}</span>
+                            <p>{{guessesLeft}} attempts remaining</p>
+			                    </div>
+			                 <guess-input v-show="gameState.won === null" v-on:enter="calculateGuess" v-on:typing="guess = $event" v-bind:guess='guess'></guess-input>
 			              </div>`,
 			});
 		</script>
