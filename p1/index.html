@@ -52,10 +52,10 @@
 				color: rgb(243, 242, 242);
 			}
 			.won {
-				background: green;
+				background: rgb(46, 98, 46);
 			}
 			.lost {
-				background: red;
+				background: rgb(134, 45, 45);
 			}
 		</style>
 		<div id="app"></div>
@@ -73,7 +73,11 @@
                         v-on:keyup.enter="$emit('enter')" 
                         v-on:input="$emit('typing', $event.target.value)" 
                         type="text"/>
-			                <button :disabled='disabled' v-on:click="$emit('enter')">Submit</button>
+			                <button :disabled='disabled' 
+                        v-on:click="$emit('enter')"
+                      >
+                        Submit
+                      </button>
 			             </div>`,
 			});
 
@@ -96,10 +100,11 @@
 				},
 				methods: {
 					calculateGuess() {
-						if (!this.secretWord.includes(this.guess) || this.guesses.includes(this.guess)) {
+						const guess = this.guess.toLowerCase();
+						if (!this.secretWord.includes(guess) || this.guesses.includes(guess)) {
 							this.counter += 1;
 						}
-						this.guesses.push(this.guess.toLowerCase());
+						this.guesses.push(guess);
 						this.guess = '';
 						const hasWon = this.secretWord.every((letter) => this.guesses.includes(letter));
 						if (hasWon) {
@@ -137,7 +142,7 @@
 							'invisible',
 						];
 
-						this.secretWord = words[Math.floor(Math.random() * words.length + 0)].split('');
+						this.secretWord = words[Math.floor(Math.random() * words.length + 0)].toLowerCase().split('');
 					},
 				},
 				computed: {
@@ -160,12 +165,29 @@
                         <span v-for="letter in revealLetter">{{letter}}</span>
                       </div>
                       <p>{{guessesLeft}} attempts remaining</p>
-                      <guess-input v-bind:disabled="gameState.won !== null" v-on:enter="calculateGuess" v-on:typing="guess = $event" v-bind:guess='guess'></guess-input>
-                      <h3 class="message" v-bind:class="{won: gameState.won, lost: gameState.won === false}">{{gameStateMessage}}</h3>
+                      <guess-input 
+                        v-bind:disabled="gameState.won !== null" 
+                        v-on:enter="calculateGuess"
+                        v-on:typing="guess = $event" 
+                        v-bind:guess='guess'/>
+                      <h3 class="message" 
+                        v-bind:class="{won: gameState.won, lost: gameState.won === false}"
+                      >
+                        {{gameStateMessage}}
+                      </h3>
                       <game-history v-bind:gameHistory="gameHistory"></game-history>
                       <div class="buttons">
-                        <button :disabled="gameState.won === null" v-on:click="resetGame"> Play again </button>
-                        <button :disabled="gameHistory.player === 0 && gameHistory.computer === 0"v-on:click="resetHistory"> Reset History </button>
+                        <button :disabled="gameState.won === null" 
+                          v-on:click="resetGame"
+                        > 
+                          Play again 
+                        </button>
+                        <button 
+                          :disabled="gameHistory.player === 0 && gameHistory.computer === 0"
+                          v-on:click="resetHistory"
+                        >
+                          Reset History 
+                        </button>
                       </div>
 			              </div>`,
 			});
