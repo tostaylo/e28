@@ -65,9 +65,9 @@
 				props: ['guess', 'disabled'],
 				template: `<div>
 			                <input maxLength=1 
-                        aria-label="Enter your guess" 
-                        placeholder="Enter your guess" 
-                        title="Enter your guess" 
+                        aria-label="Guess a Letter" 
+                        placeholder="Guess a Letter" 
+                        title="Guess a Letter" 
                         :disabled='disabled' 
                         v-bind:value="guess"
                         v-on:keyup.enter="$emit('enter')" 
