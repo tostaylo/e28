@@ -1,28 +1,88 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Project 1</title>
+		<title>E28 Project 1</title>
 		<script src="https://unpkg.com/vue"></script>
 	</head>
 	<body>
+		<style>
+			body {
+				box-sizing: border-box;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				min-height: 100vh;
+				background: hsl(200, 7%, 8%);
+				color: #98a3ad;
+			}
+			input {
+				box-sizing: border-box;
+				height: 40px;
+			}
+			button {
+				box-sizing: border-box;
+				height: 40px;
+			}
+			.main {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				flex-direction: column;
+				width: 100%;
+				max-width: 500px;
+			}
+			.secret-word {
+				width: 100%;
+				display: flex;
+				justify-content: space-evenly;
+				align-items: center;
+			}
+
+			.secret-word span {
+				font-size: 24px;
+				text-transform: uppercase;
+			}
+
+			.message {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 30px;
+				width: 100%;
+				color: rgb(243, 242, 242);
+			}
+			.won {
+				background: green;
+			}
+			.lost {
+				background: red;
+			}
+		</style>
 		<div id="app"></div>
 
 		<script>
 			Vue.component('guess-input', {
-				props: ['guess'],
-				template: `<label>
-                    Enter your guess
-                     <input v-bind:value="guess" v-on:keyup.enter="$emit('enter')" v-on:input="$emit('typing', $event.target.value)" type="text"></input>
-                   <button v-on:click="$emit('enter')">Submit</button>
-                   </label>`,
+				props: ['guess', 'disabled'],
+				template: `<div>
+			                <input maxLength=1 
+                        aria-label="Enter your guess" 
+                        placeholder="Enter your guess" 
+                        title="Enter your guess" 
+                        :disabled='disabled' 
+                        v-bind:value="guess"
+                        v-on:keyup.enter="$emit('enter')" 
+                        v-on:input="$emit('typing', $event.target.value)" 
+                        type="text"/>
+			                <button :disabled='disabled' v-on:click="$emit('enter')">Submit</button>
+			             </div>`,
 			});
 
 			Vue.component('game-history', {
 				props: ['gameHistory'],
-				template: `<div> 
-                     <p>Computer: {{gameHistory.computer}}</p>
-                     <p>Player: {{gameHistory.player}}</p>
-                   </div>`,
+				template: `<div>
+			                  <p>Computer: {{gameHistory.computer}}</p>
+			                  <p>Player: {{gameHistory.player}}</p>
+			                </div>`,
 			});
 			var app = new Vue({
 				el: '#app',
@@ -39,15 +99,15 @@
 						if (!this.secretWord.includes(this.guess) || this.guesses.includes(this.guess)) {
 							this.counter += 1;
 						}
-						this.guesses.push(this.guess);
+						this.guesses.push(this.guess.toLowerCase());
 						this.guess = '';
 						const hasWon = this.secretWord.every((letter) => this.guesses.includes(letter));
 						if (hasWon) {
-							//you won
+							// player won
 							this.gameState = { won: true };
 							this.gameHistory.player += 1;
 						} else if (this.counter >= 6) {
-							// you lost
+							// player lost
 							this.gameState = { won: false };
 							this.gameHistory.computer += 1;
 						}
@@ -88,23 +148,25 @@
 						return 6 - this.counter;
 					},
 					gameStateMessage() {
-						return this.gameState.won ? 'You Won' : 'You Lost';
+						return this.gameState.won !== null ? (this.gameState.won === true ? 'You Won' : 'You Lost') : '';
 					},
 				},
 				created() {
 					this.generateRandomWord();
 				},
 
-				template: `<div>
-                        <div>
-                          <span v-for="letter in revealLetter">{{letter}}</span>
-                              <p>{{guessesLeft}} attempts remaining</p>
-                        </div>
-			                 <guess-input v-show="gameState.won === null" v-on:enter="calculateGuess" v-on:typing="guess = $event" v-bind:guess='guess'></guess-input>
-                       <h3 v-show="gameState.won != null">{{gameStateMessage}}</h3>
-                       <game-history v-bind:gameHistory="gameHistory"></game-history>
-                       <button v-show="gameState.won != null" v-on:click="resetGame"> Play again </button>
-                       <button v-on:click="resetHistory"> Reset History </button>
+				template: `<div class="main">
+                      <div class="secret-word">
+                        <span v-for="letter in revealLetter">{{letter}}</span>
+                      </div>
+                      <p>{{guessesLeft}} attempts remaining</p>
+                      <guess-input v-bind:disabled="gameState.won !== null" v-on:enter="calculateGuess" v-on:typing="guess = $event" v-bind:guess='guess'></guess-input>
+                      <h3 class="message" v-bind:class="{won: gameState.won, lost: gameState.won === false}">{{gameStateMessage}}</h3>
+                      <game-history v-bind:gameHistory="gameHistory"></game-history>
+                      <div class="buttons">
+                        <button :disabled="gameState.won === null" v-on:click="resetGame"> Play again </button>
+                        <button :disabled="gameHistory.player === 0 && gameHistory.computer === 0"v-on:click="resetHistory"> Reset History </button>
+                      </div>
 			              </div>`,
 			});
 		</script>
