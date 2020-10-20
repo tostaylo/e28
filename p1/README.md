@@ -5,4 +5,4 @@
 
 ## Outside Resources
 
----
+[Vue Documentation](https://vuejs.org/)

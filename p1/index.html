@@ -58,13 +58,20 @@
 				background: rgb(134, 45, 45);
 			}
 			.game-stats {
+				padding-top: 20px;
 				width: 100%;
 				display: flex;
 				justify-content: space-evenly;
 			}
-
 			.game-stats div {
 				width: 45%;
+				display: flex;
+				align-items: center;
+				flex-direction: column;
+				justify-content: flex-start;
+			}
+			.game-stats div p {
+				margin: 0 0 5px 0;
 			}
 		</style>
 		<div id="app"></div>
@@ -119,11 +126,13 @@
 					},
 				},
 				template: `<div class="game-stats">
-                    <div>
+                    <div> 
+                      <h3> Score </h3>
                       <p>Computer: {{gameScore.computerScore}}</p>
                       <p>Player: {{gameScore.playerScore}}</p>
                     </div>
                     <div>
+                      <h3> History </h3>
                       <p v-for="(roundWinner, idx) in roundHistory">{{roundWinner}} won round {{idx + 1}}</p>
                     </div>
 			            </div>`,
@@ -225,7 +234,7 @@
                           :disabled="gameHistory.player === 0 && gameHistory.computer === 0"
                           v-on:click="resetHistory"
                         >
-                          Reset History 
+                          Reset Stats
                         </button>
                       </div>
                       <game-stats v-bind:gameHistory="gameHistory"></game-stats>
