@@ -1,7 +1,7 @@
 # Project 1
 
-- By Torre Taylor
-- [http://e28p1.torretaylor.me](http://e28p1.torretaylor.me)
+- By: Torre Taylor
+- Production URL: [http://e28p1.torretaylor.me](http://e28p1.torretaylor.me)
 
 ## Outside Resources
 
