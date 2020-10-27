@@ -18,6 +18,16 @@ export default {
 };
 </script>
 
+<style scoped>
+.won {
+  background: green;
+}
+.lost {
+  background: red;
+}
+</style>
+
+
 	
 
 	
