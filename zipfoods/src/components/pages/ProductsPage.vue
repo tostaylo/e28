@@ -1,7 +1,7 @@
 <script>
-import ShowProduct from "./ShowProduct.vue";
+import ShowProduct from "../ShowProduct.vue";
 export default {
-  name: "ShowProducts",
+  name: "ShowProductsPage",
   components: { "show-product": ShowProduct },
   props: ["products"],
 };
