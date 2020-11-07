@@ -1,18 +1,21 @@
 <template>
   <div>
     <nav id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <router-link exact to="/">Home</router-link> |
+      <router-link to="/frameworks">Frameworks</router-link> |
+      <router-link to="/metrics">Metrics</router-link> |
+      <router-link to="/comparison">Comparison</router-link>
     </nav>
-    <router-view :stats="stats" />
+    <router-view :timings="timings" :frameworks="frameworks" />
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import TimingResult from "@/types/index";
 export default {
   name: "App",
-  data() {
-    return { stats: null };
+  data(): { timings: TimingResult } {
+    return { timings: [] as TimingResult[] };
   },
 
   mounted() {
@@ -20,8 +23,16 @@ export default {
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        this.stats = data;
+        this.timings = data;
       });
+  },
+  computed: {
+    frameworks() {
+      if (this.timings.length) {
+        return new Set(this.timings.map(item => item.timing_framework));
+      }
+      return [];
+    }
   }
 };
 </script>
@@ -32,6 +43,9 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+a {
+  color: white;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

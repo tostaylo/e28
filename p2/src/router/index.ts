@@ -6,12 +6,36 @@ const routes: Array<RouteRecordRaw> = [
 		path: '/',
 		name: 'Home',
 		component: Home,
+	},
+	{
+		path: '/frameworks',
+		name: 'Frameworks',
+		component: () => import(/* webpackChunkName: "Frameworks" */ '../views/Frameworks.vue'),
+		props: { frameworks: null },
+	},
+	{
+		path: '/metrics',
+		name: 'Metrics',
+		component: () => import(/* webpackChunkName: "Metrics" */ '../views/Metrics.vue'),
+		props: { metrics: null },
+	},
+	{
+		path: '/comparison',
+		name: 'Comparison',
+		component: () => import(/* webpackChunkName: "Comparison" */ '../views/Comparison.vue'),
 		props: { stats: null },
 	},
 	{
-		path: '/about',
-		name: 'About',
-		component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+		path: '/metric/:id',
+		name: 'Metric',
+		component: () => import(/* webpackChunkName: "Metric" */ '../views/Metric.vue'),
+		props: true,
+	},
+	{
+		path: '/framework/:id',
+		name: 'Framework',
+		component: () => import(/* webpackChunkName: "Framework" */ '../views/Framework.vue'),
+		props: true,
 	},
 ];
 
