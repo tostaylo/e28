@@ -1,26 +1,30 @@
 <template>
   <div class="comparison">
     <h1>Comparison</h1>
-    <div>
-      <label>
-        React
-        <input
-          v-on:change="handleCheckbox"
-          :name="'react'"
-          :checked="!filteredFrameworks.includes('react')"
-          type="checkbox"
-        />
-      </label>
-      <label for="sort">Sort:</label>
-      <select v-model="sortType" name="sort" id="sort"
-        ><option value="default">default</option
-        ><option
-          v-for="name in tableColumnNames"
-          :key="name"
-          v-bind:value="name"
-          >{{ name }}</option
-        ></select
-      >
+    <div class="form">
+      <div class="checkboxes">
+        <span :key="framework" v-for="framework in frameworks">
+          <label :value="framework" :for="framework">
+            {{ framework }}
+          </label>
+          <input
+            :id="framework"
+            v-on:change="handleCheckbox"
+            :name="framework"
+            :checked="!filteredFrameworks.includes(framework)"
+            type="checkbox"
+          />
+        </span>
+      </div>
+      <div>
+        <label for="sort">Sort:</label>
+        <select v-model="sortType" name="sort" id="sort"
+          ><option value="default">default</option
+          ><option v-for="name in tableColumnNames" :key="name" :value="name">{{
+            name
+          }}</option></select
+        >
+      </div>
     </div>
 
     <table>
@@ -63,7 +67,8 @@ const Component = defineComponent({
     return {
       sortType: "default",
       filteredFrameworks: [] as string[],
-      processedTimingResults: this.timingResults
+      processedTimingResults: this.timingResults,
+      defaultTimingResults: this.timingResults
     };
   },
   props: {
@@ -74,15 +79,18 @@ const Component = defineComponent({
 
   methods: {
     handleCheckbox(e: any) {
+      console.log(this.filteredFrameworks);
       if (this.filteredFrameworks.includes(e.target.name)) {
         this.filteredFrameworks = this.filteredFrameworks.filter(
           framework => framework !== e.target.name
         );
+        console.log(this.filteredFrameworks);
       } else {
         this.filteredFrameworks = [
           ...this.filteredFrameworks,
           e.target.name
         ] as string[];
+        console.log(this.filteredFrameworks);
       }
     },
     processResults() {
@@ -97,7 +105,7 @@ const Component = defineComponent({
       );
 
       if ((sortType as string) === "default") {
-        this.processedTimingResults = filteredTimings;
+        this.processedTimingResults = this.defaultTimingResults;
       }
       switch (sortType) {
         case "timing_framework":
@@ -148,6 +156,18 @@ export default Component;
 .comparison {
   display: grid;
   justify-content: center;
+}
+.form {
+  display: inline-grid;
+  grid-template-columns: 50% 50%;
+}
+.checkboxes {
+  display: grid;
+}
+.checkboxes span {
+  display: inline-grid;
+  grid-template-columns: 50% 50%;
+  text-align: left;
 }
 
 th,
