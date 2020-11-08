@@ -6,16 +6,21 @@
       <router-link to="/metrics">Metrics</router-link> |
       <router-link to="/comparison">Comparison</router-link>
     </nav>
-    <router-view :timings="timings" :frameworks="frameworks" />
+    <router-view
+      :timingResults="timingResults"
+      :frameworks="frameworks"
+      :metrics="metrics"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import TimingResult from "@/types/index";
-export default {
+import { TimingResult } from "./types/index";
+import { defineComponent } from "vue";
+const Component = defineComponent({
   name: "App",
-  data(): { timings: TimingResult } {
-    return { timings: [] as TimingResult[] };
+  data() {
+    return { timingResults: [] as TimingResult[] };
   },
 
   mounted() {
@@ -23,18 +28,19 @@ export default {
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        this.timings = data;
+        this.timingResults = data;
       });
   },
   computed: {
-    frameworks() {
-      if (this.timings.length) {
-        return new Set(this.timings.map(item => item.timing_framework));
-      }
-      return [];
+    frameworks(): Set<string> {
+      return new Set(this.timingResults.map(item => item.timing_framework));
+    },
+    metrics(): Set<string> {
+      return new Set(this.timingResults.map(item => item.timing_type));
     }
   }
-};
+});
+export default Component;
 </script>
 
 <style>
@@ -46,6 +52,11 @@ body {
 }
 a {
   color: white;
+}
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

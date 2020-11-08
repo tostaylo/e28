@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    Main
+    <h1>Front-End Framework Bench</h1>
   </div>
 </template>
 
