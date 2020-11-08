@@ -1,9 +1,28 @@
 <template>
   <div class="comparison">
     <h1>Comparison</h1>
-    <!-- <div v-for="result in finalTimings.values()" :key="result">
-      {{ result }}
-    </div> -->
+    <div>
+      <label>
+        React
+        <input
+          v-on:change="handleCheckbox"
+          :name="'react'"
+          :checked="!filteredFrameworks.includes('react')"
+          type="checkbox"
+        />
+      </label>
+      <label for="sort">Sort:</label>
+      <select v-model="sortType" name="sort" id="sort"
+        ><option value="default">default</option
+        ><option
+          v-for="name in tableColumnNames"
+          :key="name"
+          v-bind:value="name"
+          >{{ name }}</option
+        ></select
+      >
+    </div>
+
     <table>
       <thead>
         <tr>
@@ -13,9 +32,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="result in timingResults" :key="result">
-          <th scope="row">{{ result.timing_framework }}</th>
+        <tr v-for="result in processedTimingResults" :key="result">
           <td>{{ result.timing_type }}</td>
+          <th>{{ result.timing_framework }}</th>
           <td>{{ result.final_timing.total_dur }}</td>
           <td>{{ result.final_timing.click_dur }}</td>
           <td>{{ result.final_timing.render_during_click }}</td>
@@ -31,8 +50,81 @@
 import { TimingResult } from "../types/index";
 import { defineComponent } from "vue";
 
+type ColumnType =
+  | "total_dur"
+  | "render_during_click"
+  | "timing_framework"
+  | "render_after_click"
+  | "click_dur"
+  | "timing_type";
+
 const Component = defineComponent({
-  props: { timingResults: Array as () => TimingResult[] },
+  data() {
+    return {
+      sortType: "default",
+      filteredFrameworks: [] as string[],
+      processedTimingResults: this.timingResults
+    };
+  },
+  props: {
+    timingResults: Array as () => TimingResult[],
+    frameworks: Set,
+    metrics: Set
+  },
+
+  methods: {
+    handleCheckbox(e: any) {
+      if (this.filteredFrameworks.includes(e.target.name)) {
+        this.filteredFrameworks = this.filteredFrameworks.filter(
+          framework => framework !== e.target.name
+        );
+      } else {
+        this.filteredFrameworks = [
+          ...this.filteredFrameworks,
+          e.target.name
+        ] as string[];
+      }
+    },
+    processResults() {
+      const timings: TimingResult[] = (this as any).timingResults ?? [];
+      const sortType = this.sortType as ColumnType;
+      const filteredFrameworks = this.filteredFrameworks as string[];
+
+      console.log(sortType);
+
+      const filteredTimings = timings.filter(
+        timing => !filteredFrameworks.includes(timing.timing_framework)
+      );
+
+      if ((sortType as string) === "default") {
+        this.processedTimingResults = filteredTimings;
+      }
+      switch (sortType) {
+        case "timing_framework":
+        case "timing_type":
+          filteredTimings.sort((a, b) =>
+            a[sortType].localeCompare(b[sortType])
+          );
+          break;
+
+        default:
+          filteredTimings.sort(
+            (a, b) => a.final_timing[sortType] - b.final_timing[sortType]
+          );
+          break;
+      }
+      this.processedTimingResults = filteredTimings;
+    }
+  },
+
+  watch: {
+    sortType() {
+      this.processResults();
+    },
+    filteredFrameworks() {
+      this.processResults();
+    }
+  },
 
   computed: {
     tableColumnNames(): Array<string> {
@@ -57,10 +149,11 @@ export default Component;
   display: grid;
   justify-content: center;
 }
-table,
+
 th,
 td {
-  border: 1px solid;
+  border: 1px solid gray;
+  padding: 5px;
 }
 
 tbody tr:nth-child(odd) {
