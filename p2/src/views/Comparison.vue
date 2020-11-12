@@ -39,10 +39,10 @@
         <tr v-for="result in processedTimingResults" :key="result">
           <td>{{ result.timing_type }}</td>
           <th>{{ result.timing_framework }}</th>
-          <td>{{ result.final_timing.total_dur }}</td>
-          <td>{{ result.final_timing.click_dur }}</td>
-          <td>{{ result.final_timing.render_during_click }}</td>
-          <td>{{ result.final_timing.render_after_click }}</td>
+          <td>{{ result.final_timing.total_dur?.toFixed(2) }}</td>
+          <td>{{ result.final_timing.click_dur?.toFixed(2) }}</td>
+          <td>{{ result.final_timing.render_during_click?.toFixed(2) }}</td>
+          <td>{{ result.final_timing.render_after_click?.toFixed(2) }}</td>
         </tr>
       </tbody>
     </table>
@@ -154,12 +154,15 @@ export default Component;
 
 <style scoped>
 .comparison {
+  box-sizing: border-box;
   display: grid;
   justify-content: center;
+  width: 100%;
 }
 .form {
   display: inline-grid;
   grid-template-columns: 50% 50%;
+  margin-bottom: 20px;
 }
 .checkboxes {
   display: grid;
@@ -170,10 +173,17 @@ export default Component;
   text-align: left;
 }
 
+table {
+  box-sizing: border-box;
+  table-layout: fixed;
+  width: 100%;
+}
+
 th,
 td {
   border: 1px solid gray;
   padding: 5px;
+  width: 16.5%;
 }
 
 tbody tr:nth-child(odd) {

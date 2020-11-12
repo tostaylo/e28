@@ -67,9 +67,8 @@ ul {
   color: #98a3ad;
   background: hsl(200, 7%, 8%);
   margin: 0;
-  padding: 0;
+  padding: 0 20px;
   box-sizing: border-box;
   min-height: 100vh;
-  width: 100vw;
 }
 </style>
