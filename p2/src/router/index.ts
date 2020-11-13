@@ -12,19 +12,21 @@ const routes: Array<RouteRecordRaw> = [
 		path: '/frameworks',
 		name: 'Frameworks',
 		component: () => import(/* webpackChunkName: "Frameworks" */ '../views/Frameworks.vue'),
-		props: { frameworks: new Set() },
 	},
 	{
 		path: '/metrics',
 		name: 'Metrics',
 		component: () => import(/* webpackChunkName: "Metrics" */ '../views/Metrics.vue'),
-		props: { metrics: new Set() },
 	},
 	{
 		path: '/comparison',
 		name: 'Comparison',
 		component: () => import(/* webpackChunkName: "Comparison" */ '../views/Comparison.vue'),
-		props: { timingResults: [] as TimingResult[] },
+	},
+	{
+		path: '/liked',
+		name: 'Liked',
+		component: () => import(/* webpackChunkName: "Comparison" */ '../views/Liked.vue'),
 	},
 ];
 

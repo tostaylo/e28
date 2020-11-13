@@ -4,7 +4,8 @@
       <router-link exact to="/">Home</router-link> |
       <router-link to="/frameworks">Frameworks</router-link> |
       <router-link to="/metrics">Metrics</router-link> |
-      <router-link to="/comparison">Comparison</router-link>
+      <router-link to="/comparison">Comparison</router-link> |
+      <router-link to="/liked">Liked</router-link>
     </nav>
     <router-view
       :timingResults="timingResults"

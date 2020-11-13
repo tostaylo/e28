@@ -25,6 +25,9 @@
           </option>
         </select>
       </div>
+      <div>
+        <button @click="addLike">Like</button>
+      </div>
     </div>
 
     <table>
@@ -78,6 +81,30 @@ const Component = defineComponent({
   },
 
   methods: {
+    addLike() {
+      const likedComparison = [
+        ...((this.frameworks?.values() as unknown) as any),
+      ]
+        .filter(
+          (framework: string) => !this.filteredFrameworks.includes(framework)
+        )
+        .sort((a, b) => a.localeCompare(b))
+        .join(",");
+
+      console.log(likedComparison);
+      fetch("http://e28-api.loc/like", {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({ comparison_name: likedComparison }),
+      })
+        .then((response) => response.json())
+        .then((json) => console.log(json));
+    },
+
     handleCheckbox(e: any) {
       if (this.filteredFrameworks.includes(e.target.name)) {
         this.filteredFrameworks = this.filteredFrameworks.filter(
@@ -136,9 +163,7 @@ const Component = defineComponent({
       if (timings.length <= 0) {
         return [];
       }
-      function isColumnType(cname: ColumnType | string): cname is ColumnType {
-        return true;
-      }
+
       return Object.keys(timings[0]).filter(
         (columnName) => !["id", "created_at", "updated_at"].includes(columnName)
       );
@@ -159,7 +184,7 @@ export default Component;
 }
 .form {
   display: inline-grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 33% 33% 33%;
   margin-bottom: 20px;
 }
 .checkboxes {

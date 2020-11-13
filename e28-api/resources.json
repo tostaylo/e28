@@ -1,4 +1,10 @@
 {
+	"like": {
+		"comparison_name": {
+			"type": "string",
+			"validators": ["required", "min:3"]
+		}
+	},
 	"timingResult": {
 		"timing_type": { "type": "string", "validators": [] },
 		"timing_framework": { "type": "string", "validators": [] },
