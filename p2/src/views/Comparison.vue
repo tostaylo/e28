@@ -18,12 +18,12 @@
       </div>
       <div>
         <label for="sort">Sort:</label>
-        <select v-model="sortType" name="sort" id="sort"
-          ><option value="default">default</option
-          ><option v-for="name in tableColumnNames" :key="name" :value="name">{{
-            name
-          }}</option></select
-        >
+        <select v-model="sortType" name="sort" id="sort">
+          <option value="default">default</option>
+          <option v-for="name in tableColumnNames" :key="name" :value="name">
+            {{ name }}
+          </option>
+        </select>
       </div>
     </div>
 
@@ -39,10 +39,10 @@
         <tr v-for="result in processedTimingResults" :key="result">
           <td>{{ result.timing_type }}</td>
           <th>{{ result.timing_framework }}</th>
-          <td>{{ result.final_timing.total_dur?.toFixed(2) }}</td>
-          <td>{{ result.final_timing.click_dur?.toFixed(2) }}</td>
-          <td>{{ result.final_timing.render_during_click?.toFixed(2) }}</td>
-          <td>{{ result.final_timing.render_after_click?.toFixed(2) }}</td>
+          <td>{{ Number(result.total_dur).toFixed(2) }}</td>
+          <td>{{ Number(result.click_dur).toFixed(2) }}</td>
+          <td>{{ Number(result.render_during_click).toFixed(2) }}</td>
+          <td>{{ Number(result.render_after_click).toFixed(2) }}</td>
         </tr>
       </tbody>
     </table>
@@ -68,29 +68,26 @@ const Component = defineComponent({
       sortType: "default",
       filteredFrameworks: [] as string[],
       processedTimingResults: this.timingResults,
-      defaultTimingResults: this.timingResults
+      defaultTimingResults: this.timingResults,
     };
   },
   props: {
     timingResults: Array as () => TimingResult[],
     frameworks: Set,
-    metrics: Set
+    metrics: Set,
   },
 
   methods: {
     handleCheckbox(e: any) {
-      console.log(this.filteredFrameworks);
       if (this.filteredFrameworks.includes(e.target.name)) {
         this.filteredFrameworks = this.filteredFrameworks.filter(
-          framework => framework !== e.target.name
+          (framework) => framework !== e.target.name
         );
-        console.log(this.filteredFrameworks);
       } else {
         this.filteredFrameworks = [
           ...this.filteredFrameworks,
-          e.target.name
+          e.target.name,
         ] as string[];
-        console.log(this.filteredFrameworks);
       }
     },
     processResults() {
@@ -98,10 +95,8 @@ const Component = defineComponent({
       const sortType = this.sortType as ColumnType;
       const filteredFrameworks = this.filteredFrameworks as string[];
 
-      console.log(sortType);
-
       const filteredTimings = timings.filter(
-        timing => !filteredFrameworks.includes(timing.timing_framework)
+        (timing) => !filteredFrameworks.includes(timing.timing_framework)
       );
 
       if ((sortType as string) === "default") {
@@ -116,13 +111,11 @@ const Component = defineComponent({
           break;
 
         default:
-          filteredTimings.sort(
-            (a, b) => a.final_timing[sortType] - b.final_timing[sortType]
-          );
+          filteredTimings.sort((a, b) => a[sortType] - b[sortType]);
           break;
       }
       this.processedTimingResults = filteredTimings;
-    }
+    },
   },
 
   watch: {
@@ -131,7 +124,10 @@ const Component = defineComponent({
     },
     filteredFrameworks() {
       this.processResults();
-    }
+    },
+    timingResults() {
+      this.processResults();
+    },
   },
 
   computed: {
@@ -140,12 +136,14 @@ const Component = defineComponent({
       if (timings.length <= 0) {
         return [];
       }
-      const firstTwo = Object.keys(timings[0]);
-      firstTwo.pop();
-      const finalTimings = Object.keys(timings[0].final_timing);
-      return firstTwo.concat(finalTimings);
-    }
-  }
+      function isColumnType(cname: ColumnType | string): cname is ColumnType {
+        return true;
+      }
+      return Object.keys(timings[0]).filter(
+        (columnName) => !["id", "created_at", "updated_at"].includes(columnName)
+      );
+    },
+  },
 });
 export default Component;
 </script>

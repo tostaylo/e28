@@ -26,18 +26,6 @@ const routes: Array<RouteRecordRaw> = [
 		component: () => import(/* webpackChunkName: "Comparison" */ '../views/Comparison.vue'),
 		props: { timingResults: [] as TimingResult[] },
 	},
-	{
-		path: '/metric/:id',
-		name: 'Metric',
-		component: () => import(/* webpackChunkName: "Metric" */ '../views/Metric.vue'),
-		props: true,
-	},
-	{
-		path: '/framework/:id',
-		name: 'Framework',
-		component: () => import(/* webpackChunkName: "Framework" */ '../views/Framework.vue'),
-		props: true,
-	},
 ];
 
 const router = createRouter({

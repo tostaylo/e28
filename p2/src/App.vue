@@ -24,21 +24,21 @@ const Component = defineComponent({
   },
 
   mounted() {
-    fetch("/trace_results.json")
-      .then(response => response.json())
-      .then(data => {
+    fetch("http://e28-api.loc/timingResult")
+      .then((response) => response.json())
+      .then((data) => {
         console.log(data);
-        this.timingResults = data;
+        this.timingResults = data.timingResult;
       });
   },
   computed: {
     frameworks(): Set<string> {
-      return new Set(this.timingResults.map(item => item.timing_framework));
+      return new Set(this.timingResults.map((item) => item.timing_framework));
     },
     metrics(): Set<string> {
-      return new Set(this.timingResults.map(item => item.timing_type));
-    }
-  }
+      return new Set(this.timingResults.map((item) => item.timing_type));
+    },
+  },
 });
 export default Component;
 </script>
