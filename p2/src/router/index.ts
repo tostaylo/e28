@@ -26,7 +26,7 @@ const routes: Array<RouteRecordRaw> = [
 	{
 		path: '/liked',
 		name: 'Liked',
-		component: () => import(/* webpackChunkName: "Comparison" */ '../views/Liked.vue'),
+		component: () => import(/* webpackChunkName: "Liked" */ '../views/Liked.vue'),
 	},
 ];
 
