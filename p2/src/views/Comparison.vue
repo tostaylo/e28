@@ -13,18 +13,15 @@
         ></check-boxes>
 
         <div class="sort-container">
-          <label for="sort1">Sort By:</label>
-          <select v-model="sortType1" name="sort1" id="sort1">
-            <option v-for="name in sort1Options" :key="name" :value="name">
-              {{ name }}
-            </option>
-          </select>
-          <label for="sort2">Then:</label>
-          <select v-model="sortType2" name="sort2" id="sort2">
-            <option v-for="name in sort2Options" :key="name" :value="name">
-              {{ name }}
-            </option>
-          </select>
+          <sort-select
+            v-on:select-change="handleSelect"
+            v-for="item in sortSelects"
+            :key="item.name"
+            :name="item.name"
+            :label="item.label"
+            :options="item.options"
+            :sortType="item.sortType"
+          ></sort-select>
         </div>
         <div class="like-button-container">
           <button @click="addLike">Like</button>
@@ -43,6 +40,7 @@
 import { TimingResult } from "../types/index";
 import Table from "@/components/Table.vue";
 import Checkboxes from "@/components/Checkboxes.vue";
+import SortSelect from "@/components/SortSelect.vue";
 import { defineComponent } from "vue";
 
 type ColumnType =
@@ -54,7 +52,11 @@ type ColumnType =
   | "timing_type";
 
 const Component = defineComponent({
-  components: { "results-table": Table, "check-boxes": Checkboxes },
+  components: {
+    "results-table": Table,
+    "check-boxes": Checkboxes,
+    "sort-select": SortSelect,
+  },
 
   data() {
     return {
@@ -98,6 +100,10 @@ const Component = defineComponent({
     this.sortType2 = sort2Options[0];
   },
   methods: {
+    handleSelect(e: { value: string; sortType: string }) {
+      (this as any)[e.sortType] = e.value;
+    },
+
     addLike() {
       const likedComparison = [
         ...((this.frameworks?.values() as unknown) as any),
@@ -205,6 +211,22 @@ const Component = defineComponent({
         },
       ];
     },
+    sortSelects(): any {
+      return [
+        {
+          name: "sortType1",
+          options: this.sort1Options,
+          label: "Sort By",
+          sortType: this.sortType1,
+        },
+        {
+          name: "sortType2",
+          options: this.sort2Options,
+          label: "Then",
+          sortType: this.sortType2,
+        },
+      ];
+    },
   },
 });
 export default Component;
@@ -227,7 +249,7 @@ export default Component;
 
 .sort-container {
   display: grid;
-  grid-template-columns: 15% 35% 15% 35%;
+  grid-template-columns: 50% 50%;
   grid-template-rows: 20px;
 }
 
