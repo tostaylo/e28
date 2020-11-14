@@ -9,14 +9,28 @@
           </label>
           <input
             :id="framework"
-            v-on:change="handleCheckbox"
+            v-on:change="(e) => handleCheckbox(e, 'framework')"
             :name="framework"
             :checked="!filteredFrameworks.includes(framework)"
             type="checkbox"
           />
         </span>
       </div>
-      <div>
+      <div class="checkboxes">
+        <span :key="metric" v-for="metric in metrics">
+          <label :value="metric" :for="metric">
+            {{ metric }}
+          </label>
+          <input
+            :id="metric"
+            v-on:change="(e) => handleCheckbox(e, 'metric')"
+            :name="metric"
+            :checked="!filteredMetrics.includes(metric)"
+            type="checkbox"
+          />
+        </span>
+      </div>
+      <div class="sort-container">
         <label for="sort1">Sort By:</label>
         <select v-model="sortType1" name="sort1" id="sort1">
           <option v-for="name in sort1Options" :key="name" :value="name">
@@ -30,7 +44,7 @@
           </option>
         </select>
       </div>
-      <div>
+      <div class="like-button-container">
         <button @click="addLike">Like</button>
       </div>
     </div>
@@ -46,7 +60,7 @@
       <tbody>
         <tr v-for="result in processedTimingResults" :key="result">
           <td>{{ result.timing_type }}</td>
-          <th>{{ result.timing_framework }}</th>
+          <td>{{ result.timing_framework }}</td>
           <td>{{ Number(result.total_dur).toFixed(2) }}</td>
           <td>{{ Number(result.click_dur).toFixed(2) }}</td>
           <td>{{ Number(result.render_during_click).toFixed(2) }}</td>
@@ -74,6 +88,7 @@ const Component = defineComponent({
   data() {
     return {
       filteredFrameworks: [] as string[],
+      filteredMetrics: [] as string[],
       processedTimingResults: this.timingResults,
       defaultTimingResults: this.timingResults,
       tableColumnNames: [] as string[],
@@ -122,7 +137,6 @@ const Component = defineComponent({
         .sort((a, b) => a.localeCompare(b))
         .join(",");
 
-      console.log(likedComparison);
       fetch("http://e28-api.loc/like", {
         method: "POST",
 
@@ -136,16 +150,17 @@ const Component = defineComponent({
         .then((json) => console.log(json));
     },
 
-    handleCheckbox(e: any) {
-      if (this.filteredFrameworks.includes(e.target.name)) {
-        this.filteredFrameworks = this.filteredFrameworks.filter(
+    handleCheckbox(e: any, checkboxType: string) {
+      const data =
+        checkboxType === "framework" ? "filteredFrameworks" : "filteredMetrics";
+      // this.filteredFrameworks = ["hihi"];
+
+      if (this[data].includes(e.target.name)) {
+        this[data] = this[data].filter(
           (framework) => framework !== e.target.name
         );
       } else {
-        this.filteredFrameworks = [
-          ...this.filteredFrameworks,
-          e.target.name,
-        ] as string[];
+        this[data] = [...this[data], e.target.name] as string[];
       }
     },
     processResults() {
@@ -153,10 +168,13 @@ const Component = defineComponent({
       const sortType1 = this.sortType1 as ColumnType;
       const sortType2 = this.sortType2 as ColumnType;
       const filteredFrameworks = this.filteredFrameworks as string[];
+      const filteredMetrics = this.filteredMetrics as string[];
 
-      const filteredTimings = timings.filter(
-        (timing) => !filteredFrameworks.includes(timing.timing_framework)
-      );
+      const filteredTimings = timings
+        .filter(
+          (timing) => !filteredFrameworks.includes(timing.timing_framework)
+        )
+        .filter((timing) => !filteredMetrics.includes(timing.timing_type));
 
       let sortMap: Map<string, TimingResult[]> = new Map();
       filteredTimings.forEach((item) => {
@@ -193,6 +211,9 @@ const Component = defineComponent({
     filteredFrameworks() {
       this.processResults();
     },
+    filteredMetrics() {
+      this.processResults();
+    },
     timingResults() {
       this.processResults();
     },
@@ -206,22 +227,38 @@ export default Component;
 <style scoped>
 .form {
   display: inline-grid;
-  grid-template-columns: 33% 33% 33%;
+  grid-template-columns: 20% 20% 45% 15%;
   margin-bottom: 20px;
 }
+
 .checkboxes {
   display: grid;
 }
+
 .checkboxes span {
   display: inline-grid;
   grid-template-columns: 50% 50%;
   text-align: left;
 }
 
+.sort-container {
+  display: grid;
+  grid-template-columns: 15% 35% 15% 35%;
+  grid-template-rows: 20px;
+}
+
 table {
   box-sizing: border-box;
   table-layout: fixed;
   width: 100%;
+}
+
+th {
+  font-size: 1em;
+}
+
+td {
+  font-size: 0.9em;
 }
 
 th,
@@ -238,5 +275,30 @@ tbody tr:nth-child(odd) {
 
 tbody tr:nth-child(even) {
   background-color: black;
+}
+
+.like-button-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+button {
+  cursor: pointer;
+  display: inline-block;
+  box-sizing: border-box;
+  text-decoration: none;
+  border: none;
+  border-radius: 3px;
+  font-weight: 300;
+  color: black;
+  background-color: lightgray;
+  text-align: center;
+  transition: all 0.2s;
+  width: 70%;
+  height: 40px;
+}
+
+button:hover {
+  background-color: darkgray;
 }
 </style>
