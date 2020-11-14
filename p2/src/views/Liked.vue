@@ -1,5 +1,5 @@
 <template>
-  <div class="liked">
+  <div class="route-main">
     <h1>Ranked Comparison Likes</h1>
     <ul>
       <li v-for="like in rankedLikes" :key="like">
@@ -28,9 +28,10 @@ export default defineComponent({
       .then((response) => response.json())
       .then((data) => {
         if (!data.success) {
-          return null;
+          console.log(data.errors);
+          throw new Error("Problem fetching data");
         }
-        console.log(data);
+
         const comparisonNames = data.like.map(
           (aLike: { comparison_name: string }) => aLike.comparison_name
         );
@@ -42,21 +43,22 @@ export default defineComponent({
             countsObj[comparisonName] = 1;
           }
         });
-        console.log(countsObj);
 
         const ranked = Object.entries(countsObj)
           .sort((a, b) => b[1] - a[1])
           .map<[string[], number]>((item) => [item[0].split(","), item[1]]);
 
-        console.log(ranked);
-
         this.rankedLikes = ranked;
-      });
+      })
+      .catch((err) => console.log(err));
   },
 });
 </script>
 
 <style scoped>
+ul {
+  min-width: 600px;
+}
 li {
   display: flex;
   justify-content: space-between;

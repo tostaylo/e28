@@ -1,5 +1,5 @@
 <template>
-  <div class="metrics">
+  <div class="route-main">
     <h1>Metrics</h1>
     <ul>
       <li v-for="value in metrics.values()" :key="value">

@@ -1,5 +1,5 @@
 <template>
-  <div class="frameworks">
+  <div class="route-main">
     <h1>Frameworks</h1>
     <ul>
       <li v-for="value in frameworks.values()" :key="value">

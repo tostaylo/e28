@@ -1,5 +1,5 @@
 <template>
-  <div class="comparison">
+  <div class="route-main">
     <h1>Comparison</h1>
     <div class="form">
       <div class="checkboxes">
@@ -204,12 +204,6 @@ export default Component;
 
 
 <style scoped>
-.comparison {
-  box-sizing: border-box;
-  display: grid;
-  justify-content: center;
-  width: 100%;
-}
 .form {
   display: inline-grid;
   grid-template-columns: 33% 33% 33%;

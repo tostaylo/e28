@@ -29,9 +29,13 @@ const Component = defineComponent({
     fetch("http://e28-api.loc/timingResult")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        if (!data.success) {
+          console.log(data.errors);
+          throw new Error("Problem fetching data");
+        }
         this.timingResults = data.timingResult;
-      });
+      })
+      .catch((err) => console.log(err));
   },
   computed: {
     frameworks(): Set<string> {
@@ -61,6 +65,18 @@ ul {
   padding: 0;
   margin: 0;
 }
+
+nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+}
+
+nav a {
+  margin: 0 5px;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -69,8 +85,16 @@ ul {
   color: #98a3ad;
   background: hsl(200, 7%, 8%);
   margin: 0;
-  padding: 0 20px;
+  padding: 0;
   box-sizing: border-box;
   min-height: 100vh;
+}
+
+.route-main {
+  box-sizing: border-box;
+  display: grid;
+  justify-content: center;
+  width: 100%;
+  padding: 30px;
 }
 </style>

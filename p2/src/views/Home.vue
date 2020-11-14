@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="route-main">
     <Main />
   </div>
 </template>
@@ -10,8 +10,8 @@ import Main from "@/components/Main.vue"; // @ is an alias to /src
 
 @Options({
   components: {
-    Main
-  }
+    Main,
+  },
 })
 export default class Home extends Vue {}
 </script>
