@@ -3,34 +3,15 @@
     <h1>Comparison</h1>
     <div class="form-container">
       <div class="form">
-        <div class="checkboxes">
-          <span :key="framework" v-for="framework in frameworks">
-            <label :value="framework" :for="framework">
-              {{ framework }}
-            </label>
-            <input
-              :id="framework"
-              v-on:change="(e) => handleCheckbox(e, 'framework')"
-              :name="framework"
-              :checked="!filteredFrameworks.includes(framework)"
-              type="checkbox"
-            />
-          </span>
-        </div>
-        <div class="checkboxes">
-          <span :key="metric" v-for="metric in metrics">
-            <label :value="metric" :for="metric">
-              {{ metric }}
-            </label>
-            <input
-              :id="metric"
-              v-on:change="(e) => handleCheckbox(e, 'metric')"
-              :name="metric"
-              :checked="!filteredMetrics.includes(metric)"
-              type="checkbox"
-            />
-          </span>
-        </div>
+        <check-boxes
+          :key="item.name"
+          :name="item.name"
+          v-for="item in checkboxes"
+          :typeArr="item.typeArr"
+          :filteredArr="item.filteredArr"
+          :handleCheckbox="handleCheckbox"
+        ></check-boxes>
+
         <div class="sort-container">
           <label for="sort1">Sort By:</label>
           <select v-model="sortType1" name="sort1" id="sort1">
@@ -50,36 +31,18 @@
         </div>
       </div>
     </div>
-    <div class="table-container">
-      <table>
-        <caption>
-          All timings are in milliseconds
-        </caption>
-        <thead>
-          <tr>
-            <th scope="col" v-for="name in tableColumnNames" :key="name">
-              {{ name }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="result in processedTimingResults" :key="result">
-            <td>{{ result.timing_type }}</td>
-            <td>{{ result.timing_framework }}</td>
-            <td>{{ Number(result.total_dur).toFixed(2) }}</td>
-            <td>{{ Number(result.click_dur).toFixed(2) }}</td>
-            <td>{{ Number(result.render_during_click).toFixed(2) }}</td>
-            <td>{{ Number(result.render_after_click).toFixed(2) }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <results-table
+      :processedTimingResults="processedTimingResults"
+      :tableColumnNames="tableColumnNames"
+    ></results-table>
   </div>
 </template>
 
 
 <script lang="ts">
 import { TimingResult } from "../types/index";
+import Table from "@/components/Table.vue";
+import Checkboxes from "@/components/Checkboxes.vue";
 import { defineComponent } from "vue";
 
 type ColumnType =
@@ -91,6 +54,8 @@ type ColumnType =
   | "timing_type";
 
 const Component = defineComponent({
+  components: { "results-table": Table, "check-boxes": Checkboxes },
+
   data() {
     return {
       filteredFrameworks: [] as string[],
@@ -224,6 +189,23 @@ const Component = defineComponent({
       this.processResults();
     },
   },
+
+  computed: {
+    checkboxes(): any {
+      return [
+        {
+          name: "metric",
+          filteredArr: this.filteredMetrics,
+          typeArr: this.metrics,
+        },
+        {
+          name: "framework",
+          filteredArr: this.filteredFrameworks,
+          typeArr: this.frameworks,
+        },
+      ];
+    },
+  },
 });
 export default Component;
 </script>
@@ -239,61 +221,14 @@ export default Component;
   display: inline-grid;
   grid-template-columns: 20% 20% 45% 15%;
   margin-bottom: 20px;
-  width: 1200px;
-}
-
-.checkboxes {
-  display: grid;
-}
-
-.checkboxes span {
-  display: inline-grid;
-  grid-template-columns: 50% 50%;
-  text-align: left;
+  min-width: 1200px;
+  width: 100%;
 }
 
 .sort-container {
   display: grid;
   grid-template-columns: 15% 35% 15% 35%;
   grid-template-rows: 20px;
-}
-.table-container {
-  width: 100%;
-  overflow: auto;
-}
-
-table {
-  width: 1200px;
-  box-sizing: border-box;
-  table-layout: fixed;
-}
-
-caption {
-  text-align: right;
-}
-
-th {
-  font-size: 1em;
-}
-
-td {
-  font-size: 0.9em;
-}
-
-th,
-td {
-  border: 1px solid gray;
-  padding: 5px;
-  width: 16.5%;
-}
-
-tbody tr:nth-child(odd) {
-  background-color: gray;
-  color: black;
-}
-
-tbody tr:nth-child(even) {
-  background-color: black;
 }
 
 .like-button-container {
