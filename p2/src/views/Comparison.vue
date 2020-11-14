@@ -1,76 +1,79 @@
 <template>
   <div class="route-main">
     <h1>Comparison</h1>
-    <div class="form">
-      <div class="checkboxes">
-        <span :key="framework" v-for="framework in frameworks">
-          <label :value="framework" :for="framework">
-            {{ framework }}
-          </label>
-          <input
-            :id="framework"
-            v-on:change="(e) => handleCheckbox(e, 'framework')"
-            :name="framework"
-            :checked="!filteredFrameworks.includes(framework)"
-            type="checkbox"
-          />
-        </span>
-      </div>
-      <div class="checkboxes">
-        <span :key="metric" v-for="metric in metrics">
-          <label :value="metric" :for="metric">
-            {{ metric }}
-          </label>
-          <input
-            :id="metric"
-            v-on:change="(e) => handleCheckbox(e, 'metric')"
-            :name="metric"
-            :checked="!filteredMetrics.includes(metric)"
-            type="checkbox"
-          />
-        </span>
-      </div>
-      <div class="sort-container">
-        <label for="sort1">Sort By:</label>
-        <select v-model="sortType1" name="sort1" id="sort1">
-          <option v-for="name in sort1Options" :key="name" :value="name">
-            {{ name }}
-          </option>
-        </select>
-        <label for="sort2">Then:</label>
-        <select v-model="sortType2" name="sort2" id="sort2">
-          <option v-for="name in sort2Options" :key="name" :value="name">
-            {{ name }}
-          </option>
-        </select>
-      </div>
-      <div class="like-button-container">
-        <button @click="addLike">Like</button>
+    <div class="form-container">
+      <div class="form">
+        <div class="checkboxes">
+          <span :key="framework" v-for="framework in frameworks">
+            <label :value="framework" :for="framework">
+              {{ framework }}
+            </label>
+            <input
+              :id="framework"
+              v-on:change="(e) => handleCheckbox(e, 'framework')"
+              :name="framework"
+              :checked="!filteredFrameworks.includes(framework)"
+              type="checkbox"
+            />
+          </span>
+        </div>
+        <div class="checkboxes">
+          <span :key="metric" v-for="metric in metrics">
+            <label :value="metric" :for="metric">
+              {{ metric }}
+            </label>
+            <input
+              :id="metric"
+              v-on:change="(e) => handleCheckbox(e, 'metric')"
+              :name="metric"
+              :checked="!filteredMetrics.includes(metric)"
+              type="checkbox"
+            />
+          </span>
+        </div>
+        <div class="sort-container">
+          <label for="sort1">Sort By:</label>
+          <select v-model="sortType1" name="sort1" id="sort1">
+            <option v-for="name in sort1Options" :key="name" :value="name">
+              {{ name }}
+            </option>
+          </select>
+          <label for="sort2">Then:</label>
+          <select v-model="sortType2" name="sort2" id="sort2">
+            <option v-for="name in sort2Options" :key="name" :value="name">
+              {{ name }}
+            </option>
+          </select>
+        </div>
+        <div class="like-button-container">
+          <button @click="addLike">Like</button>
+        </div>
       </div>
     </div>
-
-    <table>
-      <caption>
-        All timings are in milliseconds
-      </caption>
-      <thead>
-        <tr>
-          <th scope="col" v-for="name in tableColumnNames" :key="name">
-            {{ name }}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="result in processedTimingResults" :key="result">
-          <td>{{ result.timing_type }}</td>
-          <td>{{ result.timing_framework }}</td>
-          <td>{{ Number(result.total_dur).toFixed(2) }}</td>
-          <td>{{ Number(result.click_dur).toFixed(2) }}</td>
-          <td>{{ Number(result.render_during_click).toFixed(2) }}</td>
-          <td>{{ Number(result.render_after_click).toFixed(2) }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-container">
+      <table>
+        <caption>
+          All timings are in milliseconds
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col" v-for="name in tableColumnNames" :key="name">
+              {{ name }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="result in processedTimingResults" :key="result">
+            <td>{{ result.timing_type }}</td>
+            <td>{{ result.timing_framework }}</td>
+            <td>{{ Number(result.total_dur).toFixed(2) }}</td>
+            <td>{{ Number(result.click_dur).toFixed(2) }}</td>
+            <td>{{ Number(result.render_during_click).toFixed(2) }}</td>
+            <td>{{ Number(result.render_after_click).toFixed(2) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -228,10 +231,15 @@ export default Component;
 
 
 <style scoped>
+.form-container {
+  width: 100%;
+  overflow: auto;
+}
 .form {
   display: inline-grid;
   grid-template-columns: 20% 20% 45% 15%;
   margin-bottom: 20px;
+  width: 1200px;
 }
 
 .checkboxes {
@@ -249,11 +257,15 @@ export default Component;
   grid-template-columns: 15% 35% 15% 35%;
   grid-template-rows: 20px;
 }
+.table-container {
+  width: 100%;
+  overflow: auto;
+}
 
 table {
+  width: 1200px;
   box-sizing: border-box;
   table-layout: fixed;
-  width: 100%;
 }
 
 caption {

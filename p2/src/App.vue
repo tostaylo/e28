@@ -102,5 +102,6 @@ nav a:hover {
   justify-content: center;
   width: 100%;
   padding: 30px;
+  grid-template-columns: 100%;
 }
 </style>

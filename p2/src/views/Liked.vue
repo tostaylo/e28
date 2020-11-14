@@ -1,17 +1,19 @@
 <template>
   <div class="route-main">
     <h1>Ranked Comparison Likes</h1>
-    <ul>
-      <li v-for="like in rankedLikes" :key="like">
-        <span>
-          <span v-for="(item, index) in like[0]" :key="item">
-            {{ item }}
-            <!-- eslint-disable-next-line vue/no-parsing-error-->
-            {{ index < like[0].length - 1 ? " vs " : null }}
-          </span></span
-        ><span>{{ like[1] }}</span>
-      </li>
-    </ul>
+    <div class="list-container">
+      <ul>
+        <li v-for="like in rankedLikes" :key="like">
+          <span>
+            <span v-for="(item, index) in like[0]" :key="item">
+              {{ item }}
+              <!-- eslint-disable-next-line vue/no-parsing-error-->
+              {{ index < like[0].length - 1 ? " vs " : null }}
+            </span></span
+          ><span>{{ like[1] }}</span>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -56,9 +58,15 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.list-container {
+  width: 100%;
+  overflow: auto;
+}
+
 ul {
   min-width: 600px;
 }
+
 li {
   display: flex;
   justify-content: space-between;
