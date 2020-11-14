@@ -8,6 +8,7 @@
       <router-link to="/liked">Liked</router-link>
     </nav>
     <router-view
+      v-if="timingResults.length > 0"
       :timingResults="timingResults"
       :frameworks="frameworks"
       :metrics="metrics"

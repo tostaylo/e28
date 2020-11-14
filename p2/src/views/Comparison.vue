@@ -19,15 +19,13 @@
       <div>
         <label for="sort1">Sort By:</label>
         <select v-model="sortType1" name="sort1" id="sort1">
-          <option value="default">default</option>
-          <option v-for="name in names.sort1Options" :key="name" :value="name">
+          <option v-for="name in sort1Options" :key="name" :value="name">
             {{ name }}
           </option>
         </select>
         <label for="sort2">Then:</label>
         <select v-model="sortType2" name="sort2" id="sort2">
-          <option value="default">default</option>
-          <option v-for="name in names.sort2Options" :key="name" :value="name">
+          <option v-for="name in sort2Options" :key="name" :value="name">
             {{ name }}
           </option>
         </select>
@@ -40,7 +38,7 @@
     <table>
       <thead>
         <tr>
-          <th scope="col" v-for="name in names.tableColumnNames" :key="name">
+          <th scope="col" v-for="name in tableColumnNames" :key="name">
             {{ name }}
           </th>
         </tr>
@@ -75,11 +73,14 @@ type ColumnType =
 const Component = defineComponent({
   data() {
     return {
-      sortType1: "default" as ColumnType,
-      sortType2: "default" as ColumnType,
       filteredFrameworks: [] as string[],
       processedTimingResults: this.timingResults,
       defaultTimingResults: this.timingResults,
+      tableColumnNames: [] as string[],
+      sort1Options: [] as string[],
+      sort2Options: [] as string[],
+      sortType1: "",
+      sortType2: "",
     };
   },
   props: {
@@ -88,6 +89,28 @@ const Component = defineComponent({
     metrics: Set,
   },
 
+  mounted() {
+    const timings: TimingResult[] = (this as any).timingResults ?? [];
+    if (timings.length <= 0) {
+      return [];
+    }
+
+    const tableColumnNames = Object.keys(timings[0]).filter(
+      (columnName) => !["id", "created_at", "updated_at"].includes(columnName)
+    );
+    const sort1Options = tableColumnNames.filter((columnName) =>
+      ["timing_type", "timing_framework"].includes(columnName)
+    );
+    const sort2Options = tableColumnNames.filter(
+      (columnName) => !["timing_type", "timing_framework"].includes(columnName)
+    );
+
+    this.tableColumnNames = tableColumnNames;
+    this.sort1Options = sort1Options;
+    this.sort2Options = sort2Options;
+    this.sortType1 = sort1Options[0];
+    this.sortType2 = sort2Options[0];
+  },
   methods: {
     addLike() {
       const likedComparison = [
@@ -134,10 +157,6 @@ const Component = defineComponent({
       const filteredTimings = timings.filter(
         (timing) => !filteredFrameworks.includes(timing.timing_framework)
       );
-      if (sortType1 === ("default" as ColumnType)) {
-        this.processedTimingResults = filteredTimings;
-        return;
-      }
 
       let sortMap: Map<string, TimingResult[]> = new Map();
       filteredTimings.forEach((item) => {
@@ -150,14 +169,6 @@ const Component = defineComponent({
           sortMap.set(groupingName, [item]);
         }
       });
-
-      if (sortType2 === ("default" as ColumnType)) {
-        this.processedTimingResults = [...sortMap.values()].reduce((acc, x) => {
-          return acc.concat(x);
-        }, []);
-        // No need to continue if sort type is default?  Or just do random order? Or just not have default as option?
-        return;
-      }
 
       this.processedTimingResults = [...sortMap.values()]
         .map((item) => {
@@ -184,28 +195,6 @@ const Component = defineComponent({
     },
     timingResults() {
       this.processResults();
-    },
-  },
-
-  computed: {
-    names() {
-      const timings: TimingResult[] = (this as any).timingResults ?? [];
-      if (timings.length <= 0) {
-        return [];
-      }
-
-      const tableColumnNames = Object.keys(timings[0]).filter(
-        (columnName) => !["id", "created_at", "updated_at"].includes(columnName)
-      );
-      const sort1Options = tableColumnNames.filter((columnName) =>
-        ["timing_type", "timing_framework"].includes(columnName)
-      );
-      const sort2Options = tableColumnNames.filter(
-        (columnName) =>
-          !["timing_type", "timing_framework"].includes(columnName)
-      );
-
-      return { tableColumnNames, sort1Options, sort2Options };
     },
   },
 });
