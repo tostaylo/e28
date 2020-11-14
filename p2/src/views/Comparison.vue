@@ -50,6 +50,9 @@
     </div>
 
     <table>
+      <caption>
+        All timings are in milliseconds
+      </caption>
       <thead>
         <tr>
           <th scope="col" v-for="name in tableColumnNames" :key="name">
@@ -153,7 +156,6 @@ const Component = defineComponent({
     handleCheckbox(e: any, checkboxType: string) {
       const data =
         checkboxType === "framework" ? "filteredFrameworks" : "filteredMetrics";
-      // this.filteredFrameworks = ["hihi"];
 
       if (this[data].includes(e.target.name)) {
         this[data] = this[data].filter(
@@ -177,6 +179,7 @@ const Component = defineComponent({
         .filter((timing) => !filteredMetrics.includes(timing.timing_type));
 
       let sortMap: Map<string, TimingResult[]> = new Map();
+
       filteredTimings.forEach((item) => {
         const groupingName = item[sortType1] as string;
 
@@ -251,6 +254,10 @@ table {
   box-sizing: border-box;
   table-layout: fixed;
   width: 100%;
+}
+
+caption {
+  text-align: right;
 }
 
 th {

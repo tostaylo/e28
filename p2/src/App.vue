@@ -75,6 +75,12 @@ nav {
 
 nav a {
   margin: 0 5px;
+  text-underline-position: under;
+  transition: all 0.2s;
+}
+
+nav a:hover {
+  color: lightgray;
 }
 
 #app {
