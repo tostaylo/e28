@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import Home from '../views/Home.vue';
-import { TimingResult } from '@/types/index';
 
 const routes: Array<RouteRecordRaw> = [
 	{

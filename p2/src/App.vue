@@ -1,12 +1,13 @@
 <template>
   <div>
     <nav id="nav">
-      <router-link exact to="/">Home</router-link> |
-      <router-link to="/frameworks">Frameworks</router-link> |
-      <router-link to="/metrics">Metrics</router-link> |
-      <router-link to="/timings">Timings</router-link> |
-      <router-link to="/comparison">Comparison</router-link> |
-      <router-link to="/liked">Liked</router-link>
+      <span :key="link.name" v-for="(link, idx) in links">
+        <router-link :exact="link.exact" :to="link.url">{{
+          link.name
+        }}</router-link
+        ><!-- eslint-disable-next-line vue/no-parsing-error-->
+        {{ idx < links.length - 1 ? " | " : "" }}
+      </span>
     </nav>
     <router-view
       v-if="
@@ -34,6 +35,14 @@ const Component = defineComponent({
       metrics: {} as Record<string, Definition>,
       frameworks: {} as Record<string, Definition>,
       timings: {} as Record<string, Definition>,
+      links: [
+        { name: "Home", url: "/", exact: true },
+        { name: "Frameworks", url: "/frameworks" },
+        { name: "Metrics", url: "/metrics" },
+        { name: "Timings", url: "/timings" },
+        { name: "Comparison", url: "/comparison" },
+        { name: "Liked", url: "/liked" },
+      ],
     };
   },
 
