@@ -8,21 +8,32 @@
       <router-link to="/liked">Liked</router-link>
     </nav>
     <router-view
-      v-if="timingResults.length > 0"
+      v-if="
+        timingResults.length > 0 &&
+        Object.keys(frameworks).length > 0 &&
+        Object.keys(metrics).length > 0 &&
+        Object.keys(timings).length > 0
+      "
       :timingResults="timingResults"
       :frameworks="frameworks"
       :metrics="metrics"
+      :timings="timings"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { TimingResult } from "./types/index";
+import { TimingResult, Definition } from "./types/index";
 import { defineComponent } from "vue";
 const Component = defineComponent({
   name: "App",
   data() {
-    return { timingResults: [] as TimingResult[] };
+    return {
+      timingResults: [] as TimingResult[],
+      metrics: {} as Record<string, Definition>,
+      frameworks: {} as Record<string, Definition>,
+      timings: {} as Record<string, Definition>,
+    };
   },
 
   mounted() {
@@ -36,14 +47,30 @@ const Component = defineComponent({
         this.timingResults = data.timingResult;
       })
       .catch((err) => console.log(err));
-  },
-  computed: {
-    frameworks(): Set<string> {
-      return new Set(this.timingResults.map((item) => item.timing_framework));
-    },
-    metrics(): Set<string> {
-      return new Set(this.timingResults.map((item) => item.timing_type));
-    },
+
+    fetch("/metric_definitions.json")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        this.metrics = data;
+      })
+      .catch((err) => console.log(err));
+
+    fetch("/framework_definitions.json")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        this.frameworks = data;
+      })
+      .catch((err) => console.log(err));
+
+    fetch("/timing_definitions.json")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        this.timings = data;
+      })
+      .catch((err) => console.log(err));
   },
 });
 export default Component;

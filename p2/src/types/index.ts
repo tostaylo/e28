@@ -6,3 +6,8 @@ export interface TimingResult {
 	render_during_click: number;
 	render_after_click: number;
 }
+
+export interface Definition {
+	display_name: string;
+	definition: string;
+}

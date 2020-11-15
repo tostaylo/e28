@@ -37,7 +37,7 @@
 
 
 <script lang="ts">
-import { TimingResult } from "../types/index";
+import { TimingResult, Definition } from "../types/index";
 import Table from "@/components/Table.vue";
 import Checkboxes from "@/components/Checkboxes.vue";
 import SortSelect from "@/components/SortSelect.vue";
@@ -72,27 +72,24 @@ const Component = defineComponent({
     };
   },
   props: {
-    timingResults: Array as () => TimingResult[],
-    frameworks: Set,
-    metrics: Set,
+    timingResults: { type: Array as () => TimingResult[], default: [] },
+    frameworks: {
+      type: Object as () => Record<string, Definition>,
+      default: {},
+    },
+    metrics: { type: Object as () => Record<string, Definition>, default: {} },
+    timings: { type: Object as () => Record<string, Definition>, default: {} },
   },
 
   mounted() {
-    const timings: TimingResult[] = (this as any).timingResults ?? [];
-    if (timings.length <= 0) {
-      return [];
-    }
+    const sort1Options = ["timing_type", "timing_framework"];
 
-    const tableColumnNames = Object.keys(timings[0]).filter(
-      (columnName) => !["id", "created_at", "updated_at"].includes(columnName)
-    );
-    const sort1Options = tableColumnNames.filter((columnName) =>
-      ["timing_type", "timing_framework"].includes(columnName)
+    const tableColumnNames = Object.keys(this.timingResults[0]).filter(
+      (item) => !["id", "created_at", "updated_at"].includes(item)
     );
     const sort2Options = tableColumnNames.filter(
-      (columnName) => !["timing_type", "timing_framework"].includes(columnName)
+      (item) => !sort1Options.includes(item)
     );
-
     this.tableColumnNames = tableColumnNames;
     this.sort1Options = sort1Options;
     this.sort2Options = sort2Options;
@@ -105,9 +102,7 @@ const Component = defineComponent({
     },
 
     addLike() {
-      const likedComparison = [
-        ...((this.frameworks?.values() as unknown) as any),
-      ]
+      const likedComparison = Object.keys(this.frameworks)
         .filter(
           (framework: string) => !this.filteredFrameworks.includes(framework)
         )
@@ -140,13 +135,12 @@ const Component = defineComponent({
       }
     },
     processResults() {
-      const timings: TimingResult[] = (this as any).timingResults ?? [];
       const sortType1 = this.sortType1 as ColumnType;
       const sortType2 = this.sortType2 as ColumnType;
       const filteredFrameworks = this.filteredFrameworks as string[];
       const filteredMetrics = this.filteredMetrics as string[];
 
-      const filteredTimings = timings
+      const filteredTimings = this.timingResults
         .filter(
           (timing) => !filteredFrameworks.includes(timing.timing_framework)
         )
@@ -202,12 +196,12 @@ const Component = defineComponent({
         {
           name: "metric",
           filteredArr: this.filteredMetrics,
-          typeArr: this.metrics,
+          typeArr: Object.keys(this.metrics),
         },
         {
           name: "framework",
           filteredArr: this.filteredFrameworks,
-          typeArr: this.frameworks,
+          typeArr: Object.keys(this.frameworks),
         },
       ];
     },

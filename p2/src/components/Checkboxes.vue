@@ -19,7 +19,7 @@
 import { defineComponent } from "vue";
 export default {
   props: {
-    typeArr: Set,
+    typeArr: Array as () => string[],
     filteredArr: Array as () => string[],
     handleCheckbox: Function,
     name: String,

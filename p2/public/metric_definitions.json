@@ -1,0 +1,26 @@
+{
+	"update-k": {
+		"display_name": "Update One Thousand Rows",
+		"definition": "The Total Duration"
+	},
+	"update-ten-k": {
+		"display_name": "Update Ten Thousand Rows",
+		"definition": "Rendering During Click"
+	},
+	"k": {
+		"display_name": "Create One Thousand Rows",
+		"definition": "Rendering After Click"
+	},
+	"ten-k": {
+		"display_name": "Create Ten Thousan",
+		"definition": "The Click Duration"
+	},
+	"clear-k": {
+		"display_name": "Update One Thousand Rows",
+		"definition": "The Total Duration"
+	},
+	"clear-ten-k": {
+		"display_name": "Update Ten Thousand Rows",
+		"definition": "Rendering During Click"
+	}
+}

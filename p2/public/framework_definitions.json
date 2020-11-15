@@ -1,0 +1,26 @@
+{
+	"react": {
+		"display_name": "React",
+		"definition": "The React"
+	},
+	"web-component": {
+		"display_name": "Web Component",
+		"definition": "Rendering During Click"
+	},
+	"vue": {
+		"display_name": "Render After Click",
+		"definition": "Rendering After Click"
+	},
+	"rust-fel": {
+		"display_name": "Click Duration",
+		"definition": "The Click Duration"
+	},
+	"rust-wasm": {
+		"display_name": "Render After Click",
+		"definition": "Rendering After Click"
+	},
+	"javascript": {
+		"display_name": "Click Duration",
+		"definition": "The Click Duration"
+	}
+}

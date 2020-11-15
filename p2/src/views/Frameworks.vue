@@ -1,18 +1,21 @@
 <template>
   <div class="route-main">
-    <h1>Frameworks</h1>
+    <h1>frameworks</h1>
     <ul>
-      <li v-for="value in frameworks.values()" :key="value">
-        {{ value }}
+      <li v-for="value in frameworks" :key="value">
+        <h3>{{ value.display_name }}</h3>
+        <p>{{ value.definition }}</p>
       </li>
     </ul>
   </div>
 </template>
 
 
+
 <script lang="ts">
-import { TimingResult } from "../types/index";
+import { Definition } from "../types/index";
+
 export default {
-  props: { frameworks: new Set() as Set<TimingResult["timing_framework"]> },
+  props: { frameworks: Object as () => Record<string, Definition> },
 };
 </script>

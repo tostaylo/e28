@@ -2,8 +2,9 @@
   <div class="route-main">
     <h1>Metrics</h1>
     <ul>
-      <li v-for="value in metrics.values()" :key="value">
-        {{ value }}
+      <li v-for="value in metrics" :key="value">
+        <h3>{{ value.display_name }}</h3>
+        <p>{{ value.definition }}</p>
       </li>
     </ul>
   </div>
@@ -12,9 +13,9 @@
 
 
 <script lang="ts">
-import { TimingResult } from "../types/index";
+import { Definition } from "../types/index";
 
 export default {
-  props: { metrics: new Set() as Set<TimingResult["timing_type"]> },
+  props: { metrics: Object as () => Record<string, Definition> },
 };
 </script>
