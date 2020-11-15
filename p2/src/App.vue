@@ -37,41 +37,48 @@ const Component = defineComponent({
     };
   },
 
-  mounted() {
-    fetch("http://e28-api.loc/timingResult")
-      .then((response) => response.json())
-      .then((data) => {
-        if (!data.success) {
-          console.log(data.errors);
-          throw new Error("Problem fetching data");
+  methods: {
+    async fetchData(url: string): Promise<any> {
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          console.log(response);
+          throw new Error(`Data fetch unsuccessful for ${url}`);
         }
-        this.timingResults = data.timingResult;
-      })
-      .catch((err) => console.log(err));
 
-    fetch("/metric_definitions.json")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        this.metrics = data;
-      })
-      .catch((err) => console.log(err));
+        const json = await response.json();
+        const data = await json;
 
-    fetch("/framework_definitions.json")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        this.frameworks = data;
-      })
-      .catch((err) => console.log(err));
+        if (data.success === false) {
+          console.log(data.errors);
+          throw new Error(`Data fetch unsuccessful for ${url}`);
+        }
 
-    fetch("/timing_definitions.json")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        this.timings = data;
-      })
-      .catch((err) => console.log(err));
+        return data;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+  },
+
+  async mounted() {
+    this.timingResults = ((await this.fetchData(
+      "http://e28-api.loc/timingResult"
+    )) as any).timingResult as TimingResult[];
+
+    this.metrics = (await this.fetchData("/metric_definitions.json")) as Record<
+      string,
+      Definition
+    >;
+
+    this.frameworks = (await this.fetchData(
+      "/framework_definitions.json"
+    )) as Record<string, Definition>;
+
+    this.timings = (await this.fetchData("/timing_definitions.json")) as Record<
+      string,
+      Definition
+    >;
   },
 });
 export default Component;
