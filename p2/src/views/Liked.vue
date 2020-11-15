@@ -26,7 +26,7 @@ export default defineComponent({
     return { rankedLikes: [] as [string[], number][] };
   },
   mounted() {
-    fetch("http://e28-api.loc/like")
+    fetch(`${process.env.VUE_APP_API_URL}like`)
       .then((response) => response.json())
       .then((data) => {
         if (!data.success) {

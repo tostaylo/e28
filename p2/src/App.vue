@@ -72,7 +72,7 @@ const Component = defineComponent({
 
   async mounted() {
     this.timingResults = ((await this.fetchData(
-      "http://e28-api.loc/timingResult"
+      `${process.env.VUE_APP_API_URL}timingResult`
     )) as any).timingResult as TimingResult[];
 
     this.metrics = (await this.fetchData("/metric_definitions.json")) as Record<

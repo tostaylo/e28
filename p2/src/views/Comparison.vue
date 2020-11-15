@@ -109,7 +109,7 @@ const Component = defineComponent({
         .sort((a, b) => a.localeCompare(b))
         .join(",");
 
-      fetch("http://e28-api.loc/like", {
+      fetch(`${process.env.VUE_APP_API_URL}like`, {
         method: "POST",
 
         headers: {
