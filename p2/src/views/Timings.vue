@@ -1,7 +1,7 @@
 <template>
   <div class="route-main">
-    <h1>Metrics</h1>
-    <page-list :displayObject="metrics"></page-list>
+    <h1>Timings</h1>
+    <page-list :displayObject="timings"></page-list>
   </div>
 </template>
 
@@ -13,6 +13,6 @@ import PageList from "@/components/PageList.vue";
 
 export default {
   components: { "page-list": PageList },
-  props: { metrics: Object as () => Record<string, Definition> },
+  props: { timings: Object as () => Record<string, Definition> },
 };
 </script>
