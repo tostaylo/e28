@@ -82,15 +82,11 @@ const Component = defineComponent({
   },
 
   mounted() {
-    const sort1Options = ["timing_type", "timing_framework"];
+    const names = Object.values(this.timings).map((item) => item.display_name);
+    const sort1Options = names.slice(0, 2);
+    const sort2Options = names.slice(2);
 
-    const tableColumnNames = Object.keys(this.timingResults[0]).filter(
-      (item) => !["id", "created_at", "updated_at"].includes(item)
-    );
-    const sort2Options = tableColumnNames.filter(
-      (item) => !sort1Options.includes(item)
-    );
-    this.tableColumnNames = tableColumnNames;
+    this.tableColumnNames = names;
     this.sort1Options = sort1Options;
     this.sort2Options = sort2Options;
     this.sortType1 = sort1Options[0];
@@ -135,11 +131,16 @@ const Component = defineComponent({
       }
     },
     processResults() {
-      const sortType1 = this.sortType1 as ColumnType;
-      const sortType2 = this.sortType2 as ColumnType;
+      const sortType1 = Object.entries(this.timings).filter(
+        ([k, v]) => v.display_name === this.sortType1
+      )[0][0] as ColumnType;
+
+      const sortType2 = Object.entries(this.timings).filter(
+        ([k, v]) => v.display_name === this.sortType2
+      )[0][0] as ColumnType;
+
       const filteredFrameworks = this.filteredFrameworks as string[];
       const filteredMetrics = this.filteredMetrics as string[];
-
       const filteredTimings = this.timingResults
         .filter(
           (timing) => !filteredFrameworks.includes(timing.timing_framework)

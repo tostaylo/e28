@@ -1,7 +1,19 @@
 {
+	"timing_type": {
+		"display_name": "Metric",
+		"definition": "Rendering After Click"
+	},
+	"timing_framework": {
+		"display_name": "Framework",
+		"definition": "The Click Duration"
+	},
 	"total_dur": {
 		"display_name": "Total Duration",
 		"definition": "The Total Duration"
+	},
+	"click_dur": {
+		"display_name": "Click Duration",
+		"definition": "The Click Duration"
 	},
 	"render_during_click": {
 		"display_name": "Render During Click",
@@ -10,9 +22,5 @@
 	"render_after_click": {
 		"display_name": "Render After Click",
 		"definition": "Rendering After Click"
-	},
-	"click_dur": {
-		"display_name": "Click Duration",
-		"definition": "The Click Duration"
 	}
 }
