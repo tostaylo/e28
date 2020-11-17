@@ -63,6 +63,15 @@
       Front-End Framework Bench was an avenue to satisfy my curiosity on how it
       compared to other client-side library/frameworks.
     </p>
+    <p>
+      Front-End Framework Bench was inspired by
+      <a
+        rel="noopener noreferrer"
+        href="https://github.com/krausest/js-framework-benchmark"
+        target="_blank"
+        >JS-Framework-Bench</a
+      >. All credit goes to the owners of that repository.
+    </p>
     <h3>Example Test</h3>
     <p>
       Below is an example test for "Create K" (Create 1,000 table rows) using
