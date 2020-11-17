@@ -1,8 +1,15 @@
 <template>
   <ul>
     <li v-for="value in displayObject" :key="value">
-      <h3>{{ value.display_name }}</h3>
-      <p>{{ value.definition }}</p>
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+        v-if="value.url"
+        :href="value.url"
+        ><h3>{{ value.display_name }}</h3></a
+      >
+      <h3 v-else>{{ value.display_name }}</h3>
+      <p v-if="value.definition">{{ value.definition }}</p>
     </li>
   </ul>
 </template>
@@ -23,5 +30,8 @@ h3 {
 }
 p {
   margin: 0;
+}
+a {
+  text-underline-position: under;
 }
 </style>

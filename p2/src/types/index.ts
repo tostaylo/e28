@@ -10,4 +10,5 @@ export interface TimingResult {
 export interface Definition {
 	display_name: string;
 	definition: string;
+	url?: string;
 }
