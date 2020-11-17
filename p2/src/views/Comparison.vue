@@ -24,7 +24,10 @@
           ></sort-select>
         </div>
         <div class="like-button-container">
-          <button @click="addLike">Like</button>
+          <button v-if="!isLiked" @click="addLike">Like</button>
+          <router-link class="liked-link" v-else to="/liked"
+            >Check out the ranked comparisons.</router-link
+          >
         </div>
       </div>
     </div>
@@ -69,6 +72,7 @@ const Component = defineComponent({
       sort2Options: [] as string[],
       sortType1: "",
       sortType2: "",
+      isLiked: false,
     };
   },
   props: {
@@ -98,6 +102,7 @@ const Component = defineComponent({
     },
 
     addLike() {
+      this.isLiked = true;
       const likedComparison = Object.keys(this.frameworks)
         .filter(
           (framework: string) => !this.filteredFrameworks.includes(framework)
@@ -271,5 +276,9 @@ button {
 
 button:hover {
   background-color: darkgray;
+}
+
+.liked-link {
+  text-underline-position: under;
 }
 </style>
