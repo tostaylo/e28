@@ -16,3 +16,9 @@ export default {
   props: { metrics: Object as () => Record<string, Definition> },
 };
 </script>
+
+<style scoped>
+.route-main {
+  text-align: left;
+}
+</style>

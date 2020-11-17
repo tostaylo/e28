@@ -16,3 +16,9 @@ export default {
   props: { timings: Object as () => Record<string, Definition> },
 };
 </script>
+
+<style scoped>
+.route-main {
+  text-align: left;
+}
+</style>

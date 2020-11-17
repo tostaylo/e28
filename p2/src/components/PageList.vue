@@ -16,3 +16,12 @@ export default {
   props: { displayObject: Object as () => Record<string, Definition> },
 };
 </script>
+
+<style scoped>
+h3 {
+  margin-bottom: 5px;
+}
+p {
+  margin: 0;
+}
+</style>

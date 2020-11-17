@@ -1,26 +1,32 @@
 {
 	"react": {
 		"display_name": "React",
-		"definition": "The React"
+		"definition": "",
+		"url": ""
 	},
 	"web-component": {
 		"display_name": "Web Component",
-		"definition": "Rendering During Click"
+		"definition": "",
+		"url": ""
 	},
 	"vue": {
-		"display_name": "Render After Click",
-		"definition": "Rendering After Click"
+		"display_name": "Vue",
+		"definition": "",
+		"url": ""
 	},
 	"rust-fel": {
-		"display_name": "Click Duration",
-		"definition": "The Click Duration"
+		"display_name": "Rust-fel",
+		"definition": "",
+		"url": ""
 	},
 	"rust-wasm": {
-		"display_name": "Render After Click",
-		"definition": "Rendering After Click"
+		"display_name": "Rust-WASM",
+		"definition": "",
+		"url": ""
 	},
 	"javascript": {
-		"display_name": "Click Duration",
-		"definition": "The Click Duration"
+		"display_name": "JavaScript",
+		"definition": "",
+		"url": ""
 	}
 }
