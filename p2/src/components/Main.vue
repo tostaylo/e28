@@ -36,7 +36,8 @@
     </p>
     <p>
       Each app was built to output identical HTML structure and request the same
-      CSS file.
+      CSS file. Timings were averaged out of 12 runs thowing out the lowest two
+      scores.
     </p>
     <p>
       The apps were built to simply create, update, or delete HTML Table element
