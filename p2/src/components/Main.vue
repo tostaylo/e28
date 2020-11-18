@@ -8,8 +8,8 @@
         href="https://github.com/tostaylo/front-end-framework-bench"
         target="_blank"
         >Front-End Framework Bench</a
-      >, an automated performance testing suite focused on comparing performance
-      of client-side frameworks. The project utilizes
+      >, an automated testing suite focused on comparing performance of
+      client-side frameworks. The project utilizes
       <a
         rel="noopener noreferrer"
         href="https://github.com/puppeteer/puppeteer"
@@ -43,7 +43,7 @@
       rows. I acknowledge these actions are far from what most robust
       client-side applications require.
     </p>
-    <h3>All tests were run on</h3>
+    <h3>Environment</h3>
     <ul>
       <li>MacBook Pro (Retina, 15-inch, Mid 2015)</li>
       <li>2.5GHz Quad-Core Intel Core i7 Processor</li>
@@ -72,19 +72,16 @@
         >JS-Framework-Bench</a
       >. All credit goes to the owners of that repository.
     </p>
-    <h3>Example Test</h3>
+    <h3>Example</h3>
     <p>
-      Below is an example test for "Create K" (Create 1,000 table rows) using
-      the Vue framework.
+      Below are example screenshots for "Create K" (Create 1,000 table rows)
+      using the Vue framework.
     </p>
-    <div class="gif-container">
-      <img
-        loading="lazy"
-        alt="example test"
-        width="900"
-        height="600"
-        src="../assets/example-test.gif"
-      />
+    <div class="image-container">
+      <img loading="lazy" alt="no action" src="../assets/no_action.webp" />
+    </div>
+    <div class="image-container">
+      <img loading="lazy" alt="post click" src="../assets/post_click.webp" />
     </div>
   </div>
 </template>
@@ -113,9 +110,13 @@ h3 {
 p {
   margin: 5px 0;
 }
-.gif-container {
+.image-container {
   width: 100%;
-  overflow: auto;
+  max-width: 900px;
+}
+img {
+  width: 100%;
+  height: auto;
 }
 a {
   text-underline-position: under;
