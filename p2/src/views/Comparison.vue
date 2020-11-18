@@ -103,6 +103,8 @@ const Component = defineComponent({
 
     addLike() {
       this.isLiked = true;
+
+      // Keep in alphabetical order for string comparison and consistency
       const likedComparison = Object.keys(this.frameworks)
         .filter(
           (framework: string) => !this.filteredFrameworks.includes(framework)
@@ -127,6 +129,8 @@ const Component = defineComponent({
       const data =
         checkboxType === "framework" ? "filteredFrameworks" : "filteredMetrics";
 
+      // Display names differ from data name.
+      // For display we use display_name, for sorting and filtering we use the raw data name.
       if (this[data].includes(e.target.name)) {
         this[data] = this[data].filter(
           (framework) => framework !== e.target.name
@@ -135,7 +139,11 @@ const Component = defineComponent({
         this[data] = [...this[data], e.target.name] as string[];
       }
     },
+
+    // Handles all the filtering from checkboxes and selects
     processResults() {
+      // Display names differ from data name.
+      // For display we use display_name, for sorting and filtering we use the raw data name.
       const sortType1 = Object.entries(this.timings).filter(
         ([k, v]) => v.display_name === this.sortType1
       )[0][0] as ColumnType;
