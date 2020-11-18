@@ -77,12 +77,23 @@
       Below are example screenshots for "Create K" (Create 1,000 table rows)
       using the Vue framework.
     </p>
-    <div class="image-container">
+    <figure class="image-container">
+      <figcaption>Before Click</figcaption>
       <img loading="lazy" alt="no action" src="../assets/no_action.webp" />
-    </div>
-    <div class="image-container">
+    </figure>
+    <figure class="image-container">
+      <figcaption>After Click</figcaption>
       <img loading="lazy" alt="post click" src="../assets/post_click.webp" />
-    </div>
+    </figure>
+
+    <p>
+      Below is an example screenshot for a performance trace conducted for
+      "Create 10k" (Create 10,000 table rows) using the rust-fel framework.
+    </p>
+    <figure class="image-container">
+      <figcaption>Performance Timeline</figcaption>
+      <img loading="lazy" alt="post click" src="../assets/perf_timeline.webp" />
+    </figure>
   </div>
 </template>
 
@@ -113,10 +124,14 @@ p {
 .image-container {
   width: 100%;
   max-width: 900px;
+  margin: 20px 0;
 }
 img {
   width: 100%;
   height: auto;
+}
+caption {
+  width: 100%;
 }
 a {
   text-underline-position: under;
