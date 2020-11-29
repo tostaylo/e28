@@ -10,8 +10,11 @@
 <script>
 export default {
   name: "Categories",
-  props: ["products"],
+
   computed: {
+    products() {
+      return this.$store.state.products;
+    },
     categories() {
       let categories = this.products.map((product) => product.categories);
       let mergedCategories = [].concat.apply([], categories);

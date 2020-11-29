@@ -12,7 +12,7 @@
             v-bind:to="paths[link]"
             exact
           >
-            <span v-if="link == 'cart'">({{ store.cartCount }})</span
+            <span v-if="link == 'cart'">({{ cartCount }})</span
             >{{ link }}</router-link
           >
         </li>
@@ -24,13 +24,14 @@
 </template>
 
 <script>
-import { store, cart } from "./app.js";
+import { cart } from "./app.js";
 
 export default {
   name: "App",
 
   mounted() {
-    store.cartCount = cart.count(); // <-- NEW
+    this.$store.dispatch("fetchProducts");
+    this.$store.commit("setCartCount", cart.count());
   },
   data() {
     return {
@@ -41,8 +42,12 @@ export default {
         categories: "/categories",
         cart: "/cart",
       },
-      store: store,
     };
+  },
+  computed: {
+    cartCount() {
+      return this.$store.state.cartCount;
+    },
   },
 };
 </script>

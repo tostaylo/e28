@@ -71,6 +71,7 @@ const Component = defineComponent({
   },
 
   async mounted() {
+    // run these in parallell
     this.timingResults = ((await this.fetchData(
       `${process.env.VUE_APP_API_URL}timingResult`
     )) as any).timingResult as TimingResult[];

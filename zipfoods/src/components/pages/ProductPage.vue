@@ -15,26 +15,25 @@
 
 <script>
 import ShowProduct from "../ShowProduct.vue";
-import { store, cart } from "@/app.js";
-console.log(store, cart);
+import { cart } from "@/app.js";
 
 export default {
   name: "ProductPage",
   components: { "show-product": ShowProduct },
-  props: ["id", "products"], // comes from our dynamic segment
+  props: ["id"], // comes from our dynamic segment
   data() {
     return { addAlert: false };
   },
 
   computed: {
     product() {
-      return this.products[this.id - 1];
+      return this.$store.getters.getProductById(this.id);
     },
   },
   methods: {
     addToCart() {
       cart.add(this.product.id);
-      store.cartCount = this.cart.count();
+      this.$store.commit("setCartCount", cart.count());
       // Confirmation
       this.addAlert = true;
       setTimeout(() => (this.addAlert = false), 2000);

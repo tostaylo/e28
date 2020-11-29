@@ -14,10 +14,9 @@
 </template>
 
 <script>
-import { store, cart } from "../../app.js";
-console.log(store, cart);
+import { cart } from "../../app.js";
+
 export default {
-  props: ["products"],
   data() {
     return {
       items: [],
@@ -30,6 +29,10 @@ export default {
     productsLoaded() {
       return this.products.length > 0;
     },
+
+    products() {
+      return this.$store.state.products;
+    },
   },
   methods: {
     getProductDetails(id) {
@@ -39,7 +42,7 @@ export default {
     },
     removeFromCart(id) {
       cart.remove(id);
-      store.cartCount = this.cart.count(); // <-- NEW
+      this.$store.commit("setCartCount", cart.count());
     },
   },
 };

@@ -3,7 +3,11 @@ import ShowProduct from "../ShowProduct.vue";
 export default {
   name: "ShowProductsPage",
   components: { "show-product": ShowProduct },
-  props: ["products"],
+  computed: {
+    products() {
+      return this.$store.state.products;
+    },
+  },
 };
 </script>
 
