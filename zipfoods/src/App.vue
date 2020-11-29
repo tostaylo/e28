@@ -11,6 +11,8 @@
             v-bind:key="link"
             v-bind:to="paths[link]"
             exact
+          >
+            <span v-if="link == 'cart'">({{ store.cartCount }})</span
             >{{ link }}</router-link
           >
         </li>
@@ -22,16 +24,24 @@
 </template>
 
 <script>
+import { store, cart } from "./app.js";
+
 export default {
   name: "App",
+
+  mounted() {
+    store.cartCount = cart.count(); // <-- NEW
+  },
   data() {
     return {
-      links: ["home", "products", "categories"],
+      links: ["home", "products", "categories", "cart"],
       paths: {
         home: "/",
         products: "/products",
         categories: "/categories",
+        cart: "/cart",
       },
+      store: store,
     };
   },
 };
