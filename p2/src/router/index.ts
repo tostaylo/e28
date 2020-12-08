@@ -32,6 +32,11 @@ const routes: Array<RouteRecordRaw> = [
 		name: 'Liked',
 		component: () => import(/* webpackChunkName: "Liked" */ '../views/Liked.vue'),
 	},
+	{
+		path: '/login',
+		name: 'Login',
+		component: () => import(/* webpackChunkName: "Login" */ '../views/Login.vue'),
+	},
 ];
 
 const router = createRouter({
