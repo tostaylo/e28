@@ -130,6 +130,15 @@ nav a:hover {
   color: lightgray;
 }
 
+select {
+  height: 30px;
+  max-width: 145px;
+}
+
+label {
+  text-align: left;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
