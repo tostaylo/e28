@@ -42,6 +42,7 @@ const Component = defineComponent({
         { name: "Timings", url: "/timings" },
         { name: "Comparison", url: "/comparison" },
         { name: "Liked", url: "/liked" },
+        { name: "Login", url: "/login" },
       ],
     };
   },
@@ -71,6 +72,8 @@ const Component = defineComponent({
   },
 
   async mounted() {
+    this.$store.dispatch("authUser");
+    // run these in parallel
     this.timingResults = ((await this.fetchData(
       `${process.env.VUE_APP_API_URL}timingResult`
     )) as any).timingResult as TimingResult[];
@@ -127,6 +130,15 @@ nav a {
 
 nav a:hover {
   color: lightgray;
+}
+
+select {
+  height: 30px;
+  max-width: 145px;
+}
+
+label {
+  text-align: left;
 }
 
 #app {

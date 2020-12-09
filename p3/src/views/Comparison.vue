@@ -3,6 +3,15 @@
     <h1>Comparison</h1>
     <div class="form-container">
       <div class="form">
+        <div class="throttle-container">
+          <sort-select
+            v-on:select-change="handleSelect"
+            :name="throttledSelect.name"
+            :label="throttledSelect.label"
+            :options="throttledSelect.options"
+            :sortType="throttledSelect.sortType"
+          ></sort-select>
+        </div>
         <check-boxes
           :key="item.name"
           :name="item.name"
@@ -67,11 +76,13 @@ const Component = defineComponent({
       filteredMetrics: [] as string[],
       processedTimingResults: this.timingResults,
       defaultTimingResults: this.timingResults,
+      defaultTimingResults4x: [] as TimingResult[],
       tableColumnNames: [] as string[],
       sort1Options: [] as string[],
       sort2Options: [] as string[],
       sortType1: "",
       sortType2: "",
+      throttledSelectType: "No throttle",
       isLiked: false,
     };
   },
@@ -85,7 +96,7 @@ const Component = defineComponent({
     timings: { type: Object as () => Record<string, Definition>, default: {} },
   },
 
-  mounted() {
+  async mounted() {
     const names = Object.values(this.timings).map((item) => item.display_name);
     const sort1Options = names.slice(0, 2);
     const sort2Options = names.slice(2);
@@ -95,8 +106,34 @@ const Component = defineComponent({
     this.sort2Options = sort2Options;
     this.sortType1 = sort1Options[0];
     this.sortType2 = sort2Options[0];
+
+    this.defaultTimingResults4x = await this.fetchData(
+      "/trace_results.4x_slowdown.json"
+    );
   },
   methods: {
+    async fetchData(url: string): Promise<any> {
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          console.log(response);
+          throw new Error(`Data fetch unsuccessful for ${url}`);
+        }
+
+        const json = await response.json();
+        const data = await json;
+
+        if (data.success === false) {
+          console.log(data.errors);
+          throw new Error(`Data fetch unsuccessful for ${url}`);
+        }
+
+        return data;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+
     handleSelect(e: { value: string; sortType: string }) {
       (this as any)[e.sortType] = e.value;
     },
@@ -139,44 +176,42 @@ const Component = defineComponent({
         this[data] = [...this[data], e.target.name] as string[];
       }
     },
-
-    // Handles all the filtering from checkboxes and selects
-    processResults() {
-      // Display names differ from data name.
-      // For display we use display_name, for sorting and filtering we use the raw data name.
-      const sortType1 = Object.entries(this.timings).filter(
-        ([k, v]) => v.display_name === this.sortType1
+    getSortType(
+      k_v_Arr: [k: string, v: { display_name: string }][],
+      sortType: string
+    ): string {
+      return k_v_Arr.filter(
+        ([k, v]) => v.display_name === sortType
       )[0][0] as ColumnType;
+    },
 
-      const sortType2 = Object.entries(this.timings).filter(
-        ([k, v]) => v.display_name === this.sortType2
-      )[0][0] as ColumnType;
-
-      const filteredFrameworks = this.filteredFrameworks as string[];
-      const filteredMetrics = this.filteredMetrics as string[];
-      const filteredTimings = this.timingResults
-        .filter(
-          (timing) => !filteredFrameworks.includes(timing.timing_framework)
-        )
-        .filter((timing) => !filteredMetrics.includes(timing.timing_type));
-
+    getSortMap(
+      filteredTimings: TimingResult[],
+      sortType: string
+    ): Map<string, TimingResult[]> {
       let sortMap: Map<string, TimingResult[]> = new Map();
 
       filteredTimings.forEach((item) => {
-        const groupingName = item[sortType1] as string;
+        const groupingName = item[sortType as "timing_framework"] as string;
 
         if (sortMap.get(groupingName)) {
-          // Why is typescript making me use ?
+          // Why is typescript making me use ? when we are already in this if block?
           sortMap.get(groupingName)?.push(item);
         } else {
           sortMap.set(groupingName, [item]);
         }
       });
 
-      this.processedTimingResults = [...sortMap.values()]
+      return sortMap;
+    },
+
+    getSortedResults(sortMap: Map<string, TimingResult[]>, sortType: string) {
+      return [...sortMap.values()]
         .map((item) => {
           item.sort(
-            (a, b) => (a[sortType2] as number) - (b[sortType2] as number)
+            (a, b) =>
+              (a[sortType as "total_dur"] as number) -
+              (b[sortType as "total_dur"] as number)
           );
           return item;
         })
@@ -184,9 +219,43 @@ const Component = defineComponent({
           return acc.concat(x);
         }, []);
     },
+
+    getFilteredTimings(timingResults: TimingResult[]): TimingResult[] {
+      const filteredFrameworks = this.filteredFrameworks as string[];
+      const filteredMetrics = this.filteredMetrics as string[];
+
+      return timingResults
+        .filter(
+          (timing) => !filteredFrameworks.includes(timing.timing_framework)
+        )
+        .filter((timing) => !filteredMetrics.includes(timing.timing_type));
+    },
+
+    // Handles all the filtering from checkboxes and selects
+    processResults() {
+      // Display names differ from data name.
+      // For display we use display_name, for sorting and filtering we use the raw data name.
+      // Can these sort types be computed?
+      const timingsArr = Object.entries(this.timings);
+      const sortType1 = this.getSortType(timingsArr, this.sortType1);
+      const sortType2 = this.getSortType(timingsArr, this.sortType2);
+
+      const timingResults =
+        this.throttledSelectType === "No throttle"
+          ? this.timingResults
+          : this.defaultTimingResults4x;
+
+      this.processedTimingResults = this.getSortedResults(
+        this.getSortMap(this.getFilteredTimings(timingResults), sortType1),
+        sortType2
+      );
+    },
   },
 
   watch: {
+    throttledSelectType() {
+      this.processResults();
+    },
     sortType1() {
       this.processResults();
     },
@@ -235,6 +304,15 @@ const Component = defineComponent({
         },
       ];
     },
+
+    throttledSelect(): any {
+      return {
+        name: "throttledSelectType",
+        options: ["No throttle", "4x slowdown"],
+        label: "Throttled CPU",
+        sortType: this.throttledSelectType,
+      };
+    },
   },
 });
 export default Component;
@@ -249,16 +327,20 @@ export default Component;
 }
 .form {
   display: inline-grid;
-  grid-template-columns: 20% 20% 45% 15%;
+  grid-template-columns: 20% 20% 20% 20% 20%;
   margin-bottom: 20px;
   min-width: 1200px;
   width: 100%;
 }
 
+.throttle-container {
+  justify-content: flex-start;
+  display: flex;
+}
+
 .sort-container {
   display: grid;
-  grid-template-columns: 50% 50%;
-  grid-template-rows: 20px;
+  grid-template-columns: 100%;
 }
 
 .like-button-container {

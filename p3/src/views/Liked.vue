@@ -14,6 +14,8 @@
         </li>
       </ul>
     </div>
+
+    <div v-if="user">User Likes</div>
   </div>
 </template>
 
@@ -26,6 +28,7 @@ export default defineComponent({
     return { rankedLikes: [] as [string[], number][] };
   },
   mounted() {
+    console.log(this.$store);
     fetch(`${process.env.VUE_APP_API_URL}like`)
       .then((response) => response.json())
       .then((data) => {
@@ -53,6 +56,11 @@ export default defineComponent({
         this.rankedLikes = ranked;
       })
       .catch((err) => console.log(err));
+  },
+  computed: {
+    user() {
+      return this.$store.state.user;
+    },
   },
 });
 </script>
