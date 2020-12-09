@@ -6,10 +6,10 @@
         <div class="throttle-container">
           <sort-select
             v-on:select-change="handleSelect"
-            :name="throttled.name"
-            :label="throttled.label"
-            :options="throttled.options"
-            :sortType="throttled.sortType"
+            :name="throttledSelect.name"
+            :label="throttledSelect.label"
+            :options="throttledSelect.options"
+            :sortType="throttledSelect.sortType"
           ></sort-select>
         </div>
         <check-boxes
@@ -176,56 +176,79 @@ const Component = defineComponent({
         this[data] = [...this[data], e.target.name] as string[];
       }
     },
-
-    // Handles all the filtering from checkboxes and selects
-    processResults() {
-      // Display names differ from data name.
-      // For display we use display_name, for sorting and filtering we use the raw data name.
-      // Can these sort types be computed?
-      const sortType1 = Object.entries(this.timings).filter(
-        ([k, v]) => v.display_name === this.sortType1
+    getSortType(
+      k_v_Arr: [k: string, v: { display_name: string }][],
+      sortType: string
+    ): string {
+      return k_v_Arr.filter(
+        ([k, v]) => v.display_name === sortType
       )[0][0] as ColumnType;
+    },
 
-      const sortType2 = Object.entries(this.timings).filter(
-        ([k, v]) => v.display_name === this.sortType2
-      )[0][0] as ColumnType;
-
-      const filteredFrameworks = this.filteredFrameworks as string[];
-      const filteredMetrics = this.filteredMetrics as string[];
-      const timingResults =
-        this.throttledSelectType === "No throttle"
-          ? this.timingResults
-          : this.defaultTimingResults4x;
-
-      const filteredTimings = timingResults
-        .filter(
-          (timing) => !filteredFrameworks.includes(timing.timing_framework)
-        )
-        .filter((timing) => !filteredMetrics.includes(timing.timing_type));
-
+    getSortMap(
+      filteredTimings: TimingResult[],
+      sortType: string
+    ): Map<string, TimingResult[]> {
       let sortMap: Map<string, TimingResult[]> = new Map();
 
       filteredTimings.forEach((item) => {
-        const groupingName = item[sortType1] as string;
+        const groupingName = item[sortType as "timing_framework"] as string;
 
         if (sortMap.get(groupingName)) {
-          // Why is typescript making me use ?
+          // Why is typescript making me use ? when we are already in this if block?
           sortMap.get(groupingName)?.push(item);
         } else {
           sortMap.set(groupingName, [item]);
         }
       });
 
-      this.processedTimingResults = [...sortMap.values()]
+      return sortMap;
+    },
+
+    getSortedResults(sortMap: Map<string, TimingResult[]>, sortType: string) {
+      return [...sortMap.values()]
         .map((item) => {
           item.sort(
-            (a, b) => (a[sortType2] as number) - (b[sortType2] as number)
+            (a, b) =>
+              (a[sortType as "total_dur"] as number) -
+              (b[sortType as "total_dur"] as number)
           );
           return item;
         })
         .reduce((acc, x) => {
           return acc.concat(x);
         }, []);
+    },
+
+    getFilteredTimings(timingResults: TimingResult[]): TimingResult[] {
+      const filteredFrameworks = this.filteredFrameworks as string[];
+      const filteredMetrics = this.filteredMetrics as string[];
+
+      return timingResults
+        .filter(
+          (timing) => !filteredFrameworks.includes(timing.timing_framework)
+        )
+        .filter((timing) => !filteredMetrics.includes(timing.timing_type));
+    },
+
+    // Handles all the filtering from checkboxes and selects
+    processResults() {
+      // Display names differ from data name.
+      // For display we use display_name, for sorting and filtering we use the raw data name.
+      // Can these sort types be computed?
+      const timingsArr = Object.entries(this.timings);
+      const sortType1 = this.getSortType(timingsArr, this.sortType1);
+      const sortType2 = this.getSortType(timingsArr, this.sortType2);
+
+      const timingResults =
+        this.throttledSelectType === "No throttle"
+          ? this.timingResults
+          : this.defaultTimingResults4x;
+
+      this.processedTimingResults = this.getSortedResults(
+        this.getSortMap(this.getFilteredTimings(timingResults), sortType1),
+        sortType2
+      );
     },
   },
 
@@ -282,7 +305,7 @@ const Component = defineComponent({
       ];
     },
 
-    throttled(): any {
+    throttledSelect(): any {
       return {
         name: "throttledSelectType",
         options: ["No throttle", "4x slowdown"],
