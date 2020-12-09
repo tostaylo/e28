@@ -1,7 +1,7 @@
 # Project 2
 
 - By: Torre Taylor
-- Production URL: [https://e28p2.torretaylor.me](https://e28p2.torretaylor.me)
+- Production URL: [http://e28p2.torretaylor.me](http://e28p2.torretaylor.me)
 
 ## Pages summary
 
