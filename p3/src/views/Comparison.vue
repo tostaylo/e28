@@ -344,6 +344,7 @@ export default Component;
 }
 
 .like-button-container {
+  visibility: hidden;
   display: flex;
   justify-content: flex-end;
 }
