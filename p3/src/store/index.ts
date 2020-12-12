@@ -1,15 +1,10 @@
 import { createStore } from 'vuex';
-import { TimingResult } from '@/types/index';
 
 export default createStore({
-	state: { user: null, timingResults: [] as TimingResult[] },
+	state: { user: null },
 	mutations: {
 		setUser(state, payload) {
 			state.user = payload;
-		},
-
-		setTimingResult(state, payload) {
-			state.timingResults = payload;
 		},
 	},
 	actions: {
