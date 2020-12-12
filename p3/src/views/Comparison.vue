@@ -50,6 +50,7 @@
 
 <script lang="ts">
 import { TimingResult, Definition } from "../types/index";
+import { fetchData } from "@/utils/index";
 import Table from "@/components/Table.vue";
 import Checkboxes from "@/components/Checkboxes.vue";
 import SortSelect from "@/components/SortSelect.vue";
@@ -107,34 +108,11 @@ const Component = defineComponent({
     this.sortType1 = sort1Options[0];
     this.sortType2 = sort2Options[0];
 
-    this.defaultTimingResults4x = await this.fetchData(
+    this.defaultTimingResults4x = (await fetchData<TimingResult[]>(
       "/trace_results.4x_slowdown.json"
-    );
+    )) as TimingResult[];
   },
   methods: {
-    async fetchData(url: string): Promise<TimingResult[]> {
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          console.log(response);
-          throw new Error(`Data fetch unsuccessful for ${url}`);
-        }
-
-        const json = await response.json();
-        const data = await json;
-
-        if (data.success === false) {
-          console.log(data.errors);
-          throw new Error(`Data fetch unsuccessful for ${url}`);
-        }
-
-        return data;
-      } catch (err) {
-        console.log(err);
-        return [] as TimingResult[];
-      }
-    },
-
     handleSelect(e: { value: string; sortType: string }) {
       (this as any)[e.sortType] = e.value;
     },

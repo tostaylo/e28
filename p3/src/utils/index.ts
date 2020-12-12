@@ -1,9 +1,4 @@
-import { TimingResult, Definition } from '@/types/index';
-export async function fetchData(
-	url: string
-): Promise<
-	Record<string, Definition> | { success: boolean; errors: string; timingResult: TimingResult[] } | undefined
-> {
+export async function fetchData<T>(url: string): Promise<T | undefined> {
 	try {
 		const response = await fetch(url);
 		if (!response.ok) {

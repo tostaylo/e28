@@ -52,22 +52,24 @@ const Component = defineComponent({
     this.$store.dispatch("authUser");
     // run these in parallel
     this.timingResults = (
-      await fetchData(`${process.env.VUE_APP_API_URL}timingResult`)
+      await fetchData<{
+        success: boolean;
+        errors: string;
+        timingResult: TimingResult[];
+      }>(`${process.env.VUE_APP_API_URL}timingResult`)
     )?.timingResult as TimingResult[];
 
-    this.metrics = (await fetchData("/metric_definitions.json")) as Record<
-      string,
-      Definition
-    >;
+    this.metrics = (await fetchData<Record<string, Definition>>(
+      "/metric_definitions.json"
+    )) as Record<string, Definition>;
 
-    this.frameworks = (await fetchData(
+    this.frameworks = (await fetchData<Record<string, Definition>>(
       "/framework_definitions.json"
     )) as Record<string, Definition>;
 
-    this.timings = (await fetchData("/timing_definitions.json")) as Record<
-      string,
-      Definition
-    >;
+    this.timings = (await fetchData<Record<string, Definition>>(
+      "/timing_definitions.json"
+    )) as Record<string, Definition>;
   },
 });
 export default Component;
