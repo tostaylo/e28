@@ -3,6 +3,10 @@
 		"comparison_name": {
 			"type": "string",
 			"validators": ["required", "min:3"]
+		},
+		"user_id": {
+			"type": "integer",
+			"validators": ["required", "numeric"]
 		}
 	},
 	"timingResult": {

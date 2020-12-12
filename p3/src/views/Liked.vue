@@ -24,6 +24,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { fetchData } from "@/utils/index";
+import { User } from "../types/index";
+
 export default defineComponent({
   data() {
     return { rankedLikes: [] as [string[], number][] };
@@ -54,7 +56,7 @@ export default defineComponent({
     this.rankedLikes = ranked;
   },
   computed: {
-    user() {
+    user(): User {
       return this.$store.state.user;
     },
   },

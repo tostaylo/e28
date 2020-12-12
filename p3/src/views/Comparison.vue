@@ -32,11 +32,13 @@
             :sortType="item.sortType"
           ></sort-select>
         </div>
-        <div class="like-button-container">
-          <button v-if="!isLiked" @click="addLike">Like</button>
-          <router-link class="liked-link" v-else to="/liked"
-            >Check out the ranked comparisons.</router-link
-          >
+        <div>
+          <div class="like-button-container" v-if="user">
+            <button v-if="!isLiked" @click="addLike">Like</button>
+            <router-link class="liked-link" v-else to="/liked"
+              >Check out the ranked comparisons.</router-link
+            >
+          </div>
         </div>
       </div>
     </div>
@@ -49,7 +51,7 @@
 
 
 <script lang="ts">
-import { TimingResult, Definition } from "../types/index";
+import { TimingResult, Definition, User } from "../types/index";
 import { fetchData } from "@/utils/index";
 import Table from "@/components/Table.vue";
 import Checkboxes from "@/components/Checkboxes.vue";
@@ -130,12 +132,14 @@ const Component = defineComponent({
 
       fetch(`${process.env.VUE_APP_API_URL}like`, {
         method: "POST",
-
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
 
-        body: JSON.stringify({ comparison_name: likedComparison }),
+        body: JSON.stringify({
+          comparison_name: likedComparison,
+        }),
       })
         .then((response) => response.json())
         .then((json) => console.log(json));
@@ -303,6 +307,9 @@ const Component = defineComponent({
         sortType: this.throttledSelectType,
       };
     },
+    user(): User {
+      return this.$store.state.user;
+    },
   },
 });
 export default Component;
@@ -335,6 +342,7 @@ export default Component;
 
 .like-button-container {
   display: flex;
+  width: 100%;
   justify-content: flex-end;
 }
 

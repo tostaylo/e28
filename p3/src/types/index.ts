@@ -12,3 +12,9 @@ export interface Definition {
 	definition: string;
 	url?: string;
 }
+
+export interface User {
+	id: number;
+	name: string;
+	email: string;
+}

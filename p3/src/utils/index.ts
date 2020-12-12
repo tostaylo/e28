@@ -1,6 +1,6 @@
 export async function fetchData<T>(url: string): Promise<T | undefined> {
 	try {
-		const response = await fetch(url);
+		const response = await fetch(url, { credentials: 'include' });
 		if (!response.ok) {
 			console.log(response);
 			throw new Error(`Data fetch unsuccessful for ${url}`);
