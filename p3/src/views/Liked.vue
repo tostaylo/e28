@@ -23,38 +23,35 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { fetchData } from "@/utils/index";
 export default defineComponent({
   data() {
     return { rankedLikes: [] as [string[], number][] };
   },
-  mounted() {
-    fetch(`${process.env.VUE_APP_API_URL}like`)
-      .then((response) => response.json())
-      .then((data) => {
-        if (!data.success) {
-          console.log(data.errors);
-          throw new Error("Problem fetching data");
-        }
+  async mounted() {
+    const data = await fetchData<{
+      success: boolean;
+      errors: boolean;
+      like: { comparison_name: string }[];
+    }>(`${process.env.VUE_APP_API_URL}like`);
 
-        const comparisonNames = data.like.map(
-          (aLike: { comparison_name: string }) => aLike.comparison_name
-        );
-        let countsObj: Record<string, number> = {};
-        comparisonNames.forEach((comparisonName: string) => {
-          if (countsObj[comparisonName]) {
-            countsObj[comparisonName] += 1;
-          } else {
-            countsObj[comparisonName] = 1;
-          }
-        });
+    const comparisonNames = data?.like.map(
+      (aLike: { comparison_name: string }) => aLike.comparison_name
+    );
+    let countsObj: Record<string, number> = {};
+    comparisonNames?.forEach((comparisonName: string) => {
+      if (countsObj[comparisonName]) {
+        countsObj[comparisonName] += 1;
+      } else {
+        countsObj[comparisonName] = 1;
+      }
+    });
 
-        const ranked = Object.entries(countsObj)
-          .sort((a, b) => b[1] - a[1])
-          .map<[string[], number]>((item) => [item[0].split(","), item[1]]);
+    const ranked = Object.entries(countsObj)
+      .sort((a, b) => b[1] - a[1])
+      .map<[string[], number]>((item) => [item[0].split(","), item[1]]);
 
-        this.rankedLikes = ranked;
-      })
-      .catch((err) => console.log(err));
+    this.rankedLikes = ranked;
   },
   computed: {
     user() {

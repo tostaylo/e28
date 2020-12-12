@@ -54,7 +54,7 @@ export default defineComponent({
       }).then(async (response) => {
         if (response.ok) {
           const data = await response.json();
-          if (data.success && data.authenticated) {
+          if (data.success && data.user) {
             this.$store.commit("setUser", data.user);
           } else {
             this.errors = data.errors;
@@ -64,6 +64,9 @@ export default defineComponent({
     },
 
     logout() {
+      if (!this.$store.state.user) {
+        return;
+      }
       fetch(`${process.env.VUE_APP_API_URL}logout`, {
         method: "POST",
         credentials: "include",
