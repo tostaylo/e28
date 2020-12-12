@@ -1,8 +1,8 @@
 <template>
   <div class="route-main">
-    <h1>Login</h1>
+    <h1>Account</h1>
     <div class="form-container">
-      <form>
+      <form v-if="!user">
         <div>
           <input type="radio" id="login" value="Login" v-model="status" />
           <label for="login">Login</label>
@@ -15,9 +15,9 @@
         ><input v-if="status !== 'Login'" v-model="name" type="text" />
         <label>Email </label><input v-model="email" type="text" />
         <label>Password</label><input v-model="password" type="text" />
+        <button @click="authenticate">GO</button>
       </form>
-      <button @click="authenticate">GO</button>
-      <button @click="logout">Logout</button>
+      <button v-else @click="logout">Logout</button>
     </div>
   </div>
 </template>
@@ -25,6 +25,7 @@
 
 
 <script lang="ts">
+import { User } from "@/types";
 import { defineComponent } from "vue";
 export default defineComponent({
   data() {
@@ -38,7 +39,8 @@ export default defineComponent({
   },
 
   methods: {
-    authenticate() {
+    authenticate(e: { preventDefault: () => void }) {
+      e.preventDefault();
       const url = this.status === "Login" ? "login" : "register";
       fetch(`${process.env.VUE_APP_API_URL}${url}`, {
         method: "POST",
@@ -80,6 +82,11 @@ export default defineComponent({
           }
         }
       });
+    },
+  },
+  computed: {
+    user(): User {
+      return this.$store.state.user;
     },
   },
 });

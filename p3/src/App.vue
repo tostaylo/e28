@@ -43,7 +43,7 @@ const Component = defineComponent({
         { name: "Timings", url: "/timings" },
         { name: "Comparison", url: "/comparison" },
         { name: "Liked", url: "/liked" },
-        { name: "Login", url: "/login" },
+        { name: "Account", url: "/account" },
       ],
     };
   },

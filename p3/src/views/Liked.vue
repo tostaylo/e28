@@ -14,8 +14,6 @@
         </li>
       </ul>
     </div>
-
-    <div v-if="user">User Likes</div>
   </div>
 </template>
 
