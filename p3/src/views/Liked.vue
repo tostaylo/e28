@@ -28,7 +28,6 @@ export default defineComponent({
     return { rankedLikes: [] as [string[], number][] };
   },
   mounted() {
-    console.log(this.$store);
     fetch(`${process.env.VUE_APP_API_URL}like`)
       .then((response) => response.json())
       .then((data) => {
