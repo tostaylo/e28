@@ -112,7 +112,7 @@ const Component = defineComponent({
     );
   },
   methods: {
-    async fetchData(url: string): Promise<any> {
+    async fetchData(url: string): Promise<TimingResult[]> {
       try {
         const response = await fetch(url);
         if (!response.ok) {
@@ -131,6 +131,7 @@ const Component = defineComponent({
         return data;
       } catch (err) {
         console.log(err);
+        return [] as TimingResult[];
       }
     },
 
@@ -162,7 +163,7 @@ const Component = defineComponent({
         .then((json) => console.log(json));
     },
 
-    handleCheckbox(e: any, checkboxType: string) {
+    handleCheckbox(e: { target: { name: string } }, checkboxType: string) {
       const data =
         checkboxType === "framework" ? "filteredFrameworks" : "filteredMetrics";
 
@@ -181,7 +182,8 @@ const Component = defineComponent({
       sortType: string
     ): string {
       return k_v_Arr.filter(
-        ([k, v]) => v.display_name === sortType
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        ([_k, v]) => v.display_name === sortType
       )[0][0] as ColumnType;
     },
 
@@ -274,7 +276,7 @@ const Component = defineComponent({
   },
 
   computed: {
-    checkboxes(): any {
+    checkboxes(): { name: string; filteredArr: string[]; typeArr: string[] }[] {
       return [
         {
           name: "metric",
@@ -288,7 +290,12 @@ const Component = defineComponent({
         },
       ];
     },
-    sortSelects(): any {
+    sortSelects(): {
+      name: string;
+      options: string[];
+      label: string;
+      sortType: string;
+    }[] {
       return [
         {
           name: "sortType1",
@@ -305,7 +312,12 @@ const Component = defineComponent({
       ];
     },
 
-    throttledSelect(): any {
+    throttledSelect(): {
+      name: string;
+      options: string[];
+      label: string;
+      sortType: string;
+    } {
       return {
         name: "throttledSelectType",
         options: ["No throttle", "4x slowdown"],

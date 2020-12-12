@@ -41,14 +41,20 @@ const Component = defineComponent({
         { name: "Metrics", url: "/metrics" },
         { name: "Timings", url: "/timings" },
         { name: "Comparison", url: "/comparison" },
-        // { name: "Liked", url: "/liked" },
-        // { name: "Login", url: "/login" },
+        { name: "Liked", url: "/liked" },
+        { name: "Login", url: "/login" },
       ],
     };
   },
 
   methods: {
-    async fetchData(url: string): Promise<any> {
+    async fetchData(
+      url: string
+    ): Promise<
+      | Record<string, Definition>
+      | { success: boolean; errors: string; timingResult: TimingResult[] }
+      | undefined
+    > {
       try {
         const response = await fetch(url);
         if (!response.ok) {
@@ -67,6 +73,7 @@ const Component = defineComponent({
         return data;
       } catch (err) {
         console.log(err);
+        return;
       }
     },
   },
@@ -74,9 +81,9 @@ const Component = defineComponent({
   async mounted() {
     this.$store.dispatch("authUser");
     // run these in parallel
-    this.timingResults = ((await this.fetchData(
-      `${process.env.VUE_APP_API_URL}timingResult`
-    )) as any).timingResult as TimingResult[];
+    this.timingResults = (
+      await this.fetchData(`${process.env.VUE_APP_API_URL}timingResult`)
+    )?.timingResult as TimingResult[];
 
     this.metrics = (await this.fetchData("/metric_definitions.json")) as Record<
       string,
