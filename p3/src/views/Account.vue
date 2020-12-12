@@ -1,9 +1,10 @@
 <template>
   <div class="route-main">
     <h1>Account</h1>
+    <h2 v-if="user">{{ user.name }}</h2>
     <div class="form-container">
       <form v-if="!user">
-        <div>
+        <div class="radio-container">
           <input type="radio" id="login" value="Login" v-model="status" />
           <label for="login">Login</label>
           <br />
@@ -14,7 +15,7 @@
         <label v-if="status !== 'Login'">Name </label
         ><input v-if="status !== 'Login'" v-model="name" type="text" />
         <label>Email </label><input v-model="email" type="text" />
-        <label>Password</label><input v-model="password" type="text" />
+        <label>Password</label><input v-model="password" type="password" />
         <button @click="authenticate">GO</button>
       </form>
       <button v-else @click="logout">Logout</button>
@@ -41,6 +42,7 @@ export default defineComponent({
   methods: {
     authenticate(e: { preventDefault: () => void }) {
       e.preventDefault();
+
       const url = this.status === "Login" ? "login" : "register";
       fetch(`${process.env.VUE_APP_API_URL}${url}`, {
         method: "POST",
@@ -62,6 +64,8 @@ export default defineComponent({
             this.errors = data.errors;
           }
         }
+        this.email = "";
+        this.password = "";
       });
     },
 
@@ -103,5 +107,28 @@ form {
   display: flex;
   flex-direction: column;
   width: 320px;
+}
+
+label {
+  margin-top: 5px;
+}
+
+input[type="text"],
+input[type="password"] {
+  font-size: 18px;
+  color: #333;
+  height: 40px;
+  padding: 0 10px;
+  border-radius: 3px;
+}
+
+button {
+  width: 50%;
+  margin: 15px auto 0 auto;
+}
+
+.radio-container {
+  text-align: left;
+  margin-bottom: 15px;
 }
 </style>

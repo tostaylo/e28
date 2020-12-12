@@ -120,6 +120,21 @@ label {
   text-align: left;
 }
 
+button {
+  cursor: pointer;
+  display: inline-block;
+  box-sizing: border-box;
+  text-decoration: none;
+  border: none;
+  border-radius: 3px;
+  font-weight: 300;
+  color: #333;
+  background-color: lightgray;
+  text-align: center;
+  transition: all 0.2s;
+  height: 40px;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

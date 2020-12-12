@@ -347,19 +347,7 @@ export default Component;
 }
 
 button {
-  cursor: pointer;
-  display: inline-block;
-  box-sizing: border-box;
-  text-decoration: none;
-  border: none;
-  border-radius: 3px;
-  font-weight: 300;
-  color: black;
-  background-color: lightgray;
-  text-align: center;
-  transition: all 0.2s;
   width: 70%;
-  height: 40px;
 }
 
 button:hover {
