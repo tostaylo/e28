@@ -25,7 +25,8 @@
 </template>
 
 <script lang="ts">
-import { TimingResult, Definition } from "./types/index";
+import { TimingResult, Definition } from "@/types/index";
+import { fetchData } from "@/utils/index";
 import { defineComponent } from "vue";
 const Component = defineComponent({
   name: "App",
@@ -47,54 +48,23 @@ const Component = defineComponent({
     };
   },
 
-  methods: {
-    async fetchData(
-      url: string
-    ): Promise<
-      | Record<string, Definition>
-      | { success: boolean; errors: string; timingResult: TimingResult[] }
-      | undefined
-    > {
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          console.log(response);
-          throw new Error(`Data fetch unsuccessful for ${url}`);
-        }
-
-        const json = await response.json();
-        const data = await json;
-
-        if (data.success === false) {
-          console.log(data.errors);
-          throw new Error(`Data fetch unsuccessful for ${url}`);
-        }
-
-        return data;
-      } catch (err) {
-        console.log(err);
-        return;
-      }
-    },
-  },
-
   async mounted() {
     this.$store.dispatch("authUser");
     // run these in parallel
     this.timingResults = (
-      await this.fetchData(`${process.env.VUE_APP_API_URL}timingResult`)
+      await fetchData(`${process.env.VUE_APP_API_URL}timingResult`)
     )?.timingResult as TimingResult[];
 
-    this.metrics = (await this.fetchData("/metric_definitions.json")) as Record<
+    this.metrics = (await fetchData("/metric_definitions.json")) as Record<
       string,
       Definition
     >;
 
-    this.frameworks = (await this.fetchData(
+    this.frameworks = (await fetchData(
       "/framework_definitions.json"
     )) as Record<string, Definition>;
 
-    this.timings = (await this.fetchData("/timing_definitions.json")) as Record<
+    this.timings = (await fetchData("/timing_definitions.json")) as Record<
       string,
       Definition
     >;
