@@ -1,5 +1,6 @@
 import { createStore } from 'vuex';
 import { TimingResult } from '@/types/index';
+import { fetchData } from '@/utils/index';
 
 export default createStore({
 	state: { user: null, timingResults: [] as TimingResult[] },
@@ -22,6 +23,18 @@ export default createStore({
 					}
 				}
 			});
+		},
+		async getTimingResults(context) {
+			context.commit(
+				'setTimingResult',
+				(
+					await fetchData<{
+						success: boolean;
+						errors: string;
+						timingResult: TimingResult[];
+					}>(`${process.env.VUE_APP_API_URL}timingResult`)
+				)?.timingResult as TimingResult[]
+			);
 		},
 	},
 	modules: {},

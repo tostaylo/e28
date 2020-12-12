@@ -75,8 +75,9 @@ const Component = defineComponent({
     return {
       filteredFrameworks: [] as string[],
       filteredMetrics: [] as string[],
-      processedTimingResults: this.timingResults,
-      defaultTimingResults: this.timingResults,
+      timingResults: [] as TimingResult[],
+      processedTimingResults: [] as TimingResult[],
+      defaultTimingResults: [] as TimingResult[],
       defaultTimingResults4x: [] as TimingResult[],
       tableColumnNames: [] as string[],
       sort1Options: [] as string[],
@@ -88,7 +89,6 @@ const Component = defineComponent({
     };
   },
   props: {
-    timingResults: { type: Array as () => TimingResult[], default: [] },
     frameworks: {
       type: Object as () => Record<string, Definition>,
       default: {},
@@ -107,7 +107,9 @@ const Component = defineComponent({
     this.sort2Options = sort2Options;
     this.sortType1 = sort1Options[0];
     this.sortType2 = sort2Options[0];
-
+    this.timingResults = this.$store.state.timingResults;
+    this.processedTimingResults = this.$store.state.timingResults;
+    this.defaultTimingResults = this.$store.state.timingResults;
     this.defaultTimingResults4x = (await fetchData<TimingResult[]>(
       "/trace_results.4x_slowdown.json"
     )) as TimingResult[];
@@ -334,7 +336,6 @@ export default Component;
 }
 
 .like-button-container {
-  visibility: hidden;
   display: flex;
   justify-content: flex-end;
 }

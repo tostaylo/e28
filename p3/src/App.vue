@@ -16,7 +16,6 @@
         Object.keys(metrics).length > 0 &&
         Object.keys(timings).length > 0
       "
-      :timingResults="timingResults"
       :frameworks="frameworks"
       :metrics="metrics"
       :timings="timings"
@@ -25,14 +24,13 @@
 </template>
 
 <script lang="ts">
-import { TimingResult, Definition } from "@/types/index";
+import { Definition } from "@/types/index";
 import { fetchData } from "@/utils/index";
 import { defineComponent } from "vue";
 const Component = defineComponent({
   name: "App",
   data() {
     return {
-      timingResults: [] as TimingResult[],
       metrics: {} as Record<string, Definition>,
       frameworks: {} as Record<string, Definition>,
       timings: {} as Record<string, Definition>,
@@ -50,14 +48,8 @@ const Component = defineComponent({
 
   async mounted() {
     this.$store.dispatch("authUser");
+    this.$store.dispatch("getTimingResults");
     // run these in parallel
-    this.timingResults = (
-      await fetchData<{
-        success: boolean;
-        errors: string;
-        timingResult: TimingResult[];
-      }>(`${process.env.VUE_APP_API_URL}timingResult`)
-    )?.timingResult as TimingResult[];
 
     this.metrics = (await fetchData<Record<string, Definition>>(
       "/metric_definitions.json"
@@ -70,6 +62,11 @@ const Component = defineComponent({
     this.timings = (await fetchData<Record<string, Definition>>(
       "/timing_definitions.json"
     )) as Record<string, Definition>;
+  },
+  computed: {
+    timingResults() {
+      return this.$store.state.timingResults;
+    },
   },
 });
 export default Component;
