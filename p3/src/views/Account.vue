@@ -18,9 +18,10 @@
           v-if="status !== 'Login'"
           v-model="name"
           type="text"
+          required
         />
         <label>Email </label
-        ><input autocomplete="email" v-model="email" type="text" />
+        ><input autocomplete="email" v-model="email" type="text" required />
         <label>Password</label
         ><input
           :autocomplete="
@@ -28,8 +29,9 @@
           "
           v-model="password"
           type="password"
+          required
         />
-        <button @click="authenticate">GO</button>
+        <button type="submit" @click="authenticate">{{ status }}</button>
       </form>
       <button v-else @click="logout">Logout</button>
     </div>
@@ -113,13 +115,13 @@ export default defineComponent({
 
 <style scoped>
 .form-container {
-  width: 400px;
+  width: 320px;
   margin: 0 auto;
 }
 form {
   display: flex;
   flex-direction: column;
-  width: 320px;
+  width: 100%;
 }
 
 label {
