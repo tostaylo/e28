@@ -7,5 +7,5 @@ export const Pages = {
 	Liked: { name: 'Liked', path: '/liked' },
 	Account: { name: 'Account', path: '/account' },
 	PageNotFound: { name: 'Page Not Found', path: '/:catchAll(.*)' },
-	AccessDeniedPage: { name: 'Access Denied', path: '/denied' },
+	AccessDenied: { name: 'Access Denied', path: '/denied' },
 };
