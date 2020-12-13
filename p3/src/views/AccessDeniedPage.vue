@@ -10,8 +10,3 @@
 export default {};
 </script>
 
-<style scoped>
-.route-main {
-  text-align: left;
-}
-</style>

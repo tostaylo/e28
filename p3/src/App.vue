@@ -49,7 +49,6 @@ const Component = defineComponent({
   },
 
   async mounted() {
-    this.$store.dispatch("authUser");
     // run these in parallel
     this.timingResults = (
       await fetchData<{

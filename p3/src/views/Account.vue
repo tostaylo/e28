@@ -13,9 +13,22 @@
           <br />
         </div>
         <label v-if="status !== 'Login'">Name </label
-        ><input v-if="status !== 'Login'" v-model="name" type="text" />
-        <label>Email </label><input v-model="email" type="text" />
-        <label>Password</label><input v-model="password" type="password" />
+        ><input
+          autocomplete="name"
+          v-if="status !== 'Login'"
+          v-model="name"
+          type="text"
+        />
+        <label>Email </label
+        ><input autocomplete="email" v-model="email" type="text" />
+        <label>Password</label
+        ><input
+          :autocomplete="
+            status !== 'Login' ? 'new-password' : 'current-password'
+          "
+          v-model="password"
+          type="password"
+        />
         <button @click="authenticate">GO</button>
       </form>
       <button v-else @click="logout">Logout</button>

@@ -9,13 +9,20 @@ export default createStore({
 	},
 	actions: {
 		async authUser(context) {
-			fetch(`${process.env.VUE_APP_API_URL}auth`, { method: 'POST', credentials: 'include' }).then(async (response) => {
-				if (response.ok) {
-					const data = await response.json();
-					if (data.success && data.authenticated) {
-						context.commit('setUser', data.user);
+			return new Promise((resolve: (value: unknown) => void) => {
+				fetch(`${process.env.VUE_APP_API_URL}auth`, { method: 'POST', credentials: 'include' }).then(
+					async (response) => {
+						const data = await response.json();
+
+						if (data.authenticated) {
+							context.commit('setUser', data.user);
+						} else {
+							context.commit('setUser', null);
+						}
+
+						resolve(null);
 					}
-				}
+				);
 			});
 		},
 	},
