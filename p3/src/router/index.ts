@@ -46,6 +46,11 @@ const routes: Array<RouteRecordRaw> = [
 		path: '/denied',
 		component: () => import(/* webpackChunkName: "AccessDeniedPage" */ '@/views/AccessDeniedPage.vue'),
 	},
+	{
+		path: '/:catchAll(.*)',
+		name: 'NotFound',
+		component: () => import(/* webpackChunkName: "PageNotFound" */ '@/views/PageNotFound.vue'),
+	},
 ];
 
 const router = createRouter({
