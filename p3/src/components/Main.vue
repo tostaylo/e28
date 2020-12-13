@@ -1,6 +1,5 @@
 <template>
   <div class="main">
-    <h1>Front-End Framework Bench</h1>
     <p>
       Welcome to the project landing page for
       <a

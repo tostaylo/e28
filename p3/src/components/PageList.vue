@@ -1,5 +1,5 @@
 <template>
-  <ul>
+  <ul :data-cy="listType">
     <li v-for="value in displayObject" :key="value">
       <a
         rel="noopener noreferrer"
@@ -18,10 +18,14 @@
 
 <script lang="ts">
 import { Definition } from "../types/index";
+import { defineComponent } from "vue";
 
-export default {
-  props: { displayObject: Object as () => Record<string, Definition> },
-};
+export default defineComponent({
+  props: {
+    displayObject: Object as () => Record<string, Definition>,
+    listType: String,
+  },
+});
 </script>
 
 <style scoped>

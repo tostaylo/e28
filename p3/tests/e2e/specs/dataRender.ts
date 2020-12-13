@@ -4,13 +4,9 @@
 /// <reference types="cypress" />
 
 import { Pages } from '../../../src/router/pages';
-const { HomePage, Frameworks, Metrics, Comparison, Timings, Liked, Account } = Pages;
+const { Frameworks, Metrics, Timings } = Pages;
 
-describe('Pages Rendering', () => {
-	it(`Visits the ${HomePage.name}`, () => {
-		cy.visit(HomePage.path);
-		cy.contains('h1', 'Front-End Framework Bench');
-	});
+describe('Data Rendering', () => {
 	it(`Visits the ${Frameworks.name}`, () => {
 		cy.visit(Frameworks.path);
 		cy.contains('h1', Frameworks.name);
@@ -21,23 +17,8 @@ describe('Pages Rendering', () => {
 		cy.contains('h1', Metrics.name);
 	});
 
-	it(`Visits the ${Comparison.name}`, () => {
-		cy.visit(Comparison.path);
-		cy.contains('h1', Comparison.name);
-	});
-
 	it(`Visits the ${Timings.name}`, () => {
 		cy.visit(Timings.path);
 		cy.contains('h1', Timings.name);
-	});
-
-	it(`Visits the ${Account.name}`, () => {
-		cy.visit(Account.path);
-		cy.contains('h1', Account.name);
-	});
-
-	it(`Visits the ${Liked.name}`, () => {
-		cy.visit(Liked.path);
-		cy.contains('h1', 'Access Denied');
 	});
 });
