@@ -58,13 +58,15 @@ import Checkboxes from "@/components/Checkboxes.vue";
 import SortSelect from "@/components/SortSelect.vue";
 import { defineComponent } from "vue";
 
-type ColumnType =
+type MetricFrameworkType = "timing_type" | "timing_framework";
+
+type TimingType =
   | "total_dur"
   | "render_during_click"
-  | "timing_framework"
   | "render_after_click"
-  | "click_dur"
-  | "timing_type";
+  | "click_dur";
+
+type ColumnType = MetricFrameworkType | TimingType;
 
 const Component = defineComponent({
   components: {
@@ -156,7 +158,7 @@ const Component = defineComponent({
           (framework) => framework !== e.target.name
         );
       } else {
-        this[data] = [...this[data], e.target.name] as string[];
+        this[data] = [...this[data], e.target.name];
       }
     },
     getSortType(
@@ -176,7 +178,7 @@ const Component = defineComponent({
       let sortMap: Map<string, TimingResult[]> = new Map();
 
       filteredTimings.forEach((item) => {
-        const groupingName = item[sortType as "timing_framework"] as string;
+        const groupingName = item[sortType as MetricFrameworkType];
 
         if (sortMap.get(groupingName)) {
           // Why is typescript making me use ? when we are already in this if block?
@@ -193,9 +195,7 @@ const Component = defineComponent({
       return [...sortMap.values()]
         .map((item) => {
           item.sort(
-            (a, b) =>
-              (a[sortType as "total_dur"] as number) -
-              (b[sortType as "total_dur"] as number)
+            (a, b) => a[sortType as TimingType] - b[sortType as TimingType]
           );
           return item;
         })
@@ -205,8 +205,8 @@ const Component = defineComponent({
     },
 
     getFilteredTimings(timingResults: TimingResult[]): TimingResult[] {
-      const filteredFrameworks = this.filteredFrameworks as string[];
-      const filteredMetrics = this.filteredMetrics as string[];
+      const filteredFrameworks = this.filteredFrameworks;
+      const filteredMetrics = this.filteredMetrics;
 
       return timingResults
         .filter(
