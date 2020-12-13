@@ -66,6 +66,8 @@ type TimingType =
   | "render_after_click"
   | "click_dur";
 
+type ThrottleType = "No throttle" | "4x slowdown";
+
 type ColumnType = MetricFrameworkType | TimingType;
 
 const Component = defineComponent({
@@ -83,11 +85,11 @@ const Component = defineComponent({
       defaultTimingResults: this.timingResults,
       defaultTimingResults4x: [] as TimingResult[],
       tableColumnNames: [] as string[],
-      sort1Options: [] as string[],
+      sort1Options: [] as MetricFrameworkType[],
       sort2Options: [] as string[],
-      sortType1: "",
-      sortType2: "",
-      throttledSelectType: "No throttle",
+      metricFrameworkSelectType: "" as MetricFrameworkType,
+      timingSelectType: "" as TimingType,
+      throttledSelectType: "No throttle" as ThrottleType,
       isLiked: false,
     };
   },
@@ -103,14 +105,14 @@ const Component = defineComponent({
 
   async mounted() {
     const names = Object.values(this.timings).map((item) => item.display_name);
-    const sort1Options = names.slice(0, 2);
-    const sort2Options = names.slice(2);
+    const sort1Options = names.slice(0, 2) as MetricFrameworkType[];
+    const sort2Options = names.slice(2) as TimingType[];
 
     this.tableColumnNames = names;
     this.sort1Options = sort1Options;
     this.sort2Options = sort2Options;
-    this.sortType1 = sort1Options[0];
-    this.sortType2 = sort2Options[0];
+    this.metricFrameworkSelectType = sort1Options[0];
+    this.timingSelectType = sort2Options[0];
 
     this.defaultTimingResults4x = (await fetchData<TimingResult[]>(
       "/trace_results.4x_slowdown.json"
@@ -221,8 +223,11 @@ const Component = defineComponent({
       // For display we use display_name, for sorting and filtering we use the raw data name.
       // Can these sort types be computed?
       const timingsArr = Object.entries(this.timings);
-      const sortType1 = this.getSortType(timingsArr, this.sortType1);
-      const sortType2 = this.getSortType(timingsArr, this.sortType2);
+      const sortType1 = this.getSortType(
+        timingsArr,
+        this.metricFrameworkSelectType
+      );
+      const sortType2 = this.getSortType(timingsArr, this.timingSelectType);
 
       const timingResults =
         this.throttledSelectType === "No throttle"
@@ -240,10 +245,10 @@ const Component = defineComponent({
     throttledSelectType() {
       this.processResults();
     },
-    sortType1() {
+    metricFrameworkSelectType() {
       this.processResults();
     },
-    sortType2() {
+    timingSelectType() {
       this.processResults();
     },
     filteredFrameworks() {
@@ -280,25 +285,25 @@ const Component = defineComponent({
     }[] {
       return [
         {
-          name: "sortType1",
+          name: "metricFrameworkSelectType",
           options: this.sort1Options,
           label: "Sort By",
-          sortType: this.sortType1,
+          sortType: this.metricFrameworkSelectType,
         },
         {
-          name: "sortType2",
+          name: "timingSelectType",
           options: this.sort2Options,
           label: "Then",
-          sortType: this.sortType2,
+          sortType: this.timingSelectType,
         },
       ];
     },
 
     throttledSelect(): {
       name: string;
-      options: string[];
+      options: ThrottleType[];
       label: string;
-      sortType: string;
+      sortType: ThrottleType;
     } {
       return {
         name: "throttledSelectType",

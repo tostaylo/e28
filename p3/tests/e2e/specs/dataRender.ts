@@ -7,7 +7,7 @@ import { Pages } from '../../../src/router/pages';
 const { Frameworks, Metrics, Timings } = Pages;
 
 describe('Data Rendering', () => {
-	it(`Visits the ${Frameworks.name}`, () => {
+	it(`The ${Frameworks.name} page has correct data`, () => {
 		cy.visit(Frameworks.path);
 
 		cy.get(`[data-cy=${Frameworks.name}]`)
@@ -15,7 +15,7 @@ describe('Data Rendering', () => {
 			.should('have.length', 6);
 	});
 
-	it(`Visits the ${Metrics.name}`, () => {
+	it(`The ${Metrics.name} page has correct data`, () => {
 		cy.visit(Metrics.path);
 
 		cy.get(`[data-cy=${Metrics.name}]`)
@@ -23,7 +23,7 @@ describe('Data Rendering', () => {
 			.should('have.length', 6);
 	});
 
-	it(`Visits the ${Timings.name}`, () => {
+	it(`The ${Timings.name} page has correct data`, () => {
 		cy.visit(Timings.path);
 		cy.get(`[data-cy=${Timings.name}]`)
 			.children()

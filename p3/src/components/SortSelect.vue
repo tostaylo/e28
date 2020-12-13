@@ -2,6 +2,7 @@
   <div class="select-container">
     <label for="name">{{ label }}</label>
     <select
+      :data-cy="name"
       v-on:change="
         $emit('select-change', { value: $event.target.value, sortType: name })
       "
