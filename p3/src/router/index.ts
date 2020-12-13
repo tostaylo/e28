@@ -1,44 +1,46 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import Home from '../views/Home.vue';
 import store from '@/store/index';
+import { Pages } from '@/router/pages.ts';
+const { HomePage, Frameworks, Metrics, Comparison, Timings, Liked, Account } = Pages;
 
 const routes: Array<RouteRecordRaw> = [
 	{
-		path: '/',
-		name: 'Home',
+		path: HomePage.path,
+		name: HomePage.name,
 		component: Home,
 	},
 	{
-		path: '/frameworks',
-		name: 'Frameworks',
+		path: Frameworks.path,
+		name: Frameworks.name,
 		component: () => import(/* webpackChunkName: "Frameworks" */ '../views/Frameworks.vue'),
 	},
 	{
-		path: '/metrics',
-		name: 'Metrics',
+		path: Metrics.path,
+		name: Metrics.name,
 		component: () => import(/* webpackChunkName: "Metrics" */ '../views/Metrics.vue'),
 	},
 	{
-		path: '/comparison',
-		name: 'Comparison',
+		path: Comparison.path,
+		name: Comparison.name,
 		component: () => import(/* webpackChunkName: "Comparison" */ '../views/Comparison.vue'),
 	},
 	{
-		path: '/timings',
-		name: 'Timings',
+		path: Timings.path,
+		name: Timings.name,
 		component: () => import(/* webpackChunkName: "Timings" */ '../views/Timings.vue'),
 	},
 	{
-		path: '/liked',
-		name: 'Liked',
+		path: Liked.path,
+		name: Liked.name,
 		component: () => import(/* webpackChunkName: "Liked" */ '../views/Liked.vue'),
 		meta: {
 			requiresAuth: true,
 		},
 	},
 	{
-		path: '/account',
-		name: 'Account',
+		path: Account.path,
+		name: Account.name,
 		component: () => import(/* webpackChunkName: "Account" */ '../views/Account.vue'),
 	},
 	{

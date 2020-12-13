@@ -28,6 +28,18 @@
 import { TimingResult, Definition } from "@/types/index";
 import { fetchData } from "@/utils/index";
 import { defineComponent } from "vue";
+import { Pages } from "@/router/pages";
+
+const {
+  HomePage,
+  Frameworks,
+  Metrics,
+  Comparison,
+  Timings,
+  Liked,
+  Account,
+} = Pages;
+
 const Component = defineComponent({
   name: "App",
   data() {
@@ -37,13 +49,13 @@ const Component = defineComponent({
       frameworks: {} as Record<string, Definition>,
       timings: {} as Record<string, Definition>,
       links: [
-        { name: "Home", url: "/", exact: true },
-        { name: "Frameworks", url: "/frameworks" },
-        { name: "Metrics", url: "/metrics" },
-        { name: "Timings", url: "/timings" },
-        { name: "Comparison", url: "/comparison" },
-        { name: "Liked", url: "/liked" },
-        { name: "Account", url: "/account" },
+        { name: HomePage.name, url: HomePage.path, exact: true },
+        { name: Frameworks.name, url: Frameworks.path },
+        { name: Metrics.name, url: Metrics.path },
+        { name: Timings.name, url: Timings.path },
+        { name: Comparison.name, url: Comparison.path },
+        { name: Liked.name, url: Liked.path },
+        { name: Account.name, url: Account.path },
       ],
     };
   },
