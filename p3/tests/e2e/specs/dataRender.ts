@@ -9,16 +9,24 @@ const { Frameworks, Metrics, Timings } = Pages;
 describe('Data Rendering', () => {
 	it(`Visits the ${Frameworks.name}`, () => {
 		cy.visit(Frameworks.path);
-		cy.contains('h1', Frameworks.name);
+
+		cy.get(`[data-cy=${Frameworks.name}]`)
+			.children()
+			.should('have.length', 6);
 	});
 
 	it(`Visits the ${Metrics.name}`, () => {
 		cy.visit(Metrics.path);
-		cy.contains('h1', Metrics.name);
+
+		cy.get(`[data-cy=${Metrics.name}]`)
+			.children()
+			.should('have.length', 6);
 	});
 
 	it(`Visits the ${Timings.name}`, () => {
 		cy.visit(Timings.path);
-		cy.contains('h1', Timings.name);
+		cy.get(`[data-cy=${Timings.name}]`)
+			.children()
+			.should('have.length', 6);
 	});
 });
