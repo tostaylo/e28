@@ -8,6 +8,14 @@
 
 import { Pages } from '../../../src/router/pages';
 const { Comparison } = Pages;
+const slices = [
+	[0, 5],
+	[6, 11],
+	[12, 17],
+	[18, 23],
+	[24, 29],
+	[30, 35],
+];
 
 describe('Sorting and Filtering', () => {
 	it(`It sorts by metrics`, () => {
@@ -25,17 +33,51 @@ describe('Sorting and Filtering', () => {
 			.then(getCells)
 			.then(metricFrameworkSortAssertions);
 	});
+
+	it(`It sorts by total duration`, () => {
+		cy.visit(Comparison.path);
+		cy.get(`[data-cy=timingSelectType]`).select('Total Duration');
+		cy.get(`[data-cy=TotalDur]`)
+			.then(getCells)
+			.then(timingSortAssertions);
+	});
+	it(`It sorts by click duration`, () => {
+		cy.visit(Comparison.path);
+		cy.get(`[data-cy=timingSelectType]`).select('Click Duration');
+		cy.get(`[data-cy=ClickDur]`)
+			.then(getCells)
+			.then(timingSortAssertions);
+	});
+
+	it(`It sorts by render after click`, () => {
+		cy.visit(Comparison.path);
+		cy.get(`[data-cy=timingSelectType]`).select('Render After Click');
+		cy.get(`[data-cy=RenderAfterClick]`)
+			.then(getCells)
+			.then(timingSortAssertions);
+	});
+
+	it(`It sorts by render during click`, () => {
+		cy.visit(Comparison.path);
+		cy.get(`[data-cy=timingSelectType]`).select('Render During Click');
+		cy.get(`[data-cy=RenderDuringClick]`)
+			.then(getCells)
+			.then(timingSortAssertions);
+	});
 });
+
+function timingSortAssertions(timings: string[]) {
+	for (let i = 0; i < slices.length; i++) {
+		expect(helpItrTimings(slices[i][0], slices[i][1], timings)).to.be.true;
+	}
+}
 
 function metricFrameworkSortAssertions(metricNames: string[]) {
 	expect(metricNames).to.have.length(36);
 
-	expect(helpItr(0, 5, metricNames)).to.be.true;
-	expect(helpItr(6, 11, metricNames)).to.be.true;
-	expect(helpItr(12, 17, metricNames)).to.be.true;
-	expect(helpItr(18, 23, metricNames)).to.be.true;
-	expect(helpItr(24, 29, metricNames)).to.be.true;
-	expect(helpItr(30, 35, metricNames)).to.be.true;
+	for (let i = 0; i < slices.length; i++) {
+		expect(helpItrMetricFramework(slices[i][0], slices[i][1], metricNames)).to.be.true;
+	}
 }
 
 function getCells(tableDataCells: JQuery<HTMLElement>) {
@@ -47,10 +89,23 @@ function getCells(tableDataCells: JQuery<HTMLElement>) {
 	return names;
 }
 
-function helpItr(iterStart: number, iterEnd: number, arr: string[]) {
+function helpItrMetricFramework(iterStart: number, iterEnd: number, arr: string[]) {
 	for (let i = iterStart; i <= iterEnd; i++) {
+		// Can I make a predicate here?
 		if (arr[iterStart] !== arr[i]) {
 			return false;
+		}
+	}
+	return true;
+}
+function helpItrTimings(iterStart: number, iterEnd: number, arr: string[]) {
+	for (let i = iterStart; i <= iterEnd; i++) {
+		// Can I make a predicate here?
+		if (i < iterEnd) {
+			console.log(arr[i], arr[i + 1]);
+			if (parseFloat(arr[i]) > parseFloat(arr[i + 1])) {
+				return false;
+			}
 		}
 	}
 	return true;

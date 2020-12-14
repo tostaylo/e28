@@ -1,6 +1,6 @@
 <template>
   <div class="route-main">
-    <h1>Comparison</h1>
+    <h1>{{ pageTitle }}</h1>
     <div class="form-container">
       <div class="form">
         <div class="throttle-container">
@@ -91,6 +91,7 @@ const Component = defineComponent({
       timingSelectType: "" as TimingType,
       throttledSelectType: "No throttle" as ThrottleType,
       isLiked: false,
+      pageTitle: this.$router.currentRoute.value.name,
     };
   },
   props: {
