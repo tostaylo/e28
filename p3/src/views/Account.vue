@@ -3,6 +3,7 @@
     <h1>Account</h1>
     <h2 v-if="user">{{ user.name }}</h2>
     <div class="form-container">
+      <strong v-for="error in errors" :key="error">{{ error }}</strong>
       <form v-if="!user">
         <div class="radio-container">
           <input type="radio" id="login" value="Login" v-model="status" />
@@ -43,6 +44,8 @@
 <script lang="ts">
 import { User } from "@/types";
 import { defineComponent } from "vue";
+import Validator from "validatorjs";
+
 export default defineComponent({
   data() {
     return {
@@ -50,13 +53,19 @@ export default defineComponent({
       password: "",
       name: "",
       status: "Login",
-      errors: null,
+      errors: [] as string[],
     };
   },
 
   methods: {
     authenticate(e: { preventDefault: () => void }) {
       e.preventDefault();
+
+      const { passesVal, errors } = this.validate();
+      if (!passesVal) {
+        this.errors = errors;
+        return;
+      }
 
       const url = this.status === "Login" ? "login" : "register";
       fetch(`${process.env.VUE_APP_API_URL}${url}`, {
@@ -79,9 +88,40 @@ export default defineComponent({
             this.errors = data.errors;
           }
         }
+        this.name = "";
         this.email = "";
         this.password = "";
+        this.errors = [];
       });
+    },
+
+    validate(): {
+      passesVal: boolean | void;
+      errors: string[];
+    } {
+      let data = {
+        name: this.name,
+        email: this.email,
+        password: this.password,
+      };
+
+      let rules = {
+        // this.name should be undefined for Login but not Register.
+        //Using string to let it pass validation for empty strings
+        name: this.status === "Login" ? "string" : "required",
+        email: "required|email",
+        password: "required|min:8",
+      };
+      let validation = new Validator(data, rules);
+
+      return {
+        passesVal: validation.passes(),
+        errors: [
+          ...validation.errors.get("email"),
+          ...validation.errors.get("password"),
+          ...validation.errors.get("name"),
+        ],
+      };
     },
 
     logout() {
@@ -108,6 +148,15 @@ export default defineComponent({
       return this.$store.state.user;
     },
   },
+
+  watch: {
+    status() {
+      this.email = "";
+      this.password = "";
+      this.name = "";
+      this.errors = [];
+    },
+  },
 });
 </script>
 
@@ -118,6 +167,13 @@ export default defineComponent({
   width: 320px;
   margin: 0 auto;
 }
+
+strong {
+  display: block;
+  color: red;
+  margin-bottom: 15px;
+}
+
 form {
   display: flex;
   flex-direction: column;
