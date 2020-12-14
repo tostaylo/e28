@@ -23,18 +23,21 @@ describe('Data Rendering', () => {
 				expect(metricNames).to.have.length(36);
 				// can't use array methods in cypress with my config for some reason.
 				// expect(metricNames.slice(0, 5).every((name) => name === metricNames[0])).to.be.true;
-				helpItr(0, 5, metricNames, 'update-k');
-				helpItr(6, 11, metricNames, 'clear-k');
-				helpItr(12, 17, metricNames, 'k');
-				helpItr(18, 23, metricNames, 'update-ten-k');
-				helpItr(24, 29, metricNames, 'clear-ten-k');
-				helpItr(30, 35, metricNames, 'ten-k');
+				expect(helpItr(0, 5, metricNames)).to.be.true;
+				expect(helpItr(6, 11, metricNames)).to.be.true;
+				expect(helpItr(12, 17, metricNames)).to.be.true;
+				expect(helpItr(18, 23, metricNames)).to.be.true;
+				expect(helpItr(24, 29, metricNames)).to.be.true;
+				expect(helpItr(30, 35, metricNames)).to.be.true;
 			});
 	});
 });
 
-function helpItr(iterStart: number, iterEnd: number, arr: string[], name: string) {
+function helpItr(iterStart: number, iterEnd: number, arr: string[]) {
 	for (let i = iterStart; i <= iterEnd; i++) {
-		expect(arr[i]).to.equal(name);
+		if (arr[iterStart] !== arr[i]) {
+			return false;
+		}
 	}
+	return true;
 }
