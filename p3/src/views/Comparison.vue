@@ -15,7 +15,7 @@
         <check-boxes
           :key="item.name"
           :name="item.name"
-          v-for="item in checkboxes"
+          v-for="item in filterCheckboxes"
           :typeArr="item.typeArr"
           :filteredArr="item.filteredArr"
           :handleCheckbox="handleCheckbox"
@@ -85,8 +85,8 @@ const Component = defineComponent({
       defaultTimingResults: this.timingResults,
       defaultTimingResults4x: [] as TimingResult[],
       tableColumnNames: [] as string[],
-      sort1Options: [] as MetricFrameworkType[],
-      sort2Options: [] as string[],
+      metricFrameworkSortOptions: [] as MetricFrameworkType[],
+      timingTypeSortOptions: [] as TimingType[],
       metricFrameworkSelectType: "" as MetricFrameworkType,
       timingSelectType: "" as TimingType,
       throttledSelectType: "No throttle" as ThrottleType,
@@ -106,14 +106,17 @@ const Component = defineComponent({
 
   async mounted() {
     const names = Object.values(this.timings).map((item) => item.display_name);
-    const sort1Options = names.slice(0, 2) as MetricFrameworkType[];
-    const sort2Options = names.slice(2) as TimingType[];
+    const metricFrameworkSortOptions = names.slice(
+      0,
+      2
+    ) as MetricFrameworkType[];
+    const timingTypeSortOptions = names.slice(2) as TimingType[];
 
     this.tableColumnNames = names;
-    this.sort1Options = sort1Options;
-    this.sort2Options = sort2Options;
-    this.metricFrameworkSelectType = sort1Options[0];
-    this.timingSelectType = sort2Options[0];
+    this.metricFrameworkSortOptions = metricFrameworkSortOptions;
+    this.timingTypeSortOptions = timingTypeSortOptions;
+    this.metricFrameworkSelectType = metricFrameworkSortOptions[0];
+    this.timingSelectType = timingTypeSortOptions[0];
 
     this.defaultTimingResults4x = (await fetchData<TimingResult[]>(
       "/trace_results.4x_slowdown.json"
@@ -156,6 +159,7 @@ const Component = defineComponent({
 
       // Display names differ from data name.
       // For display we use display_name, for sorting and filtering we use the raw data name.
+      // display_name = Total Duration, raw data name = total_dur
       if (this[data].includes(e.target.name)) {
         this[data] = this[data].filter(
           (framework) => framework !== e.target.name
@@ -166,8 +170,8 @@ const Component = defineComponent({
     },
     getSortType(
       k_v_Arr: [k: string, v: { display_name: string }][],
-      sortType: string
-    ): string {
+      sortType: ColumnType
+    ): ColumnType {
       return k_v_Arr.filter(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ([_k, v]) => v.display_name === sortType
@@ -176,15 +180,17 @@ const Component = defineComponent({
 
     getSortMap(
       filteredTimings: TimingResult[],
-      sortType: string
+      sortType: ColumnType
     ): Map<string, TimingResult[]> {
+      // key will be a framework or a metric
       let sortMap: Map<string, TimingResult[]> = new Map();
 
       filteredTimings.forEach((item) => {
+        // Grouping name Either a Metric or a Framework
         const groupingName = item[sortType as MetricFrameworkType];
 
         if (sortMap.get(groupingName)) {
-          // Why is typescript making me use ? when we are already in this if block?
+          // Why is typescript making me use ? when we are already in this "if" block?
           sortMap.get(groupingName)?.push(item);
         } else {
           sortMap.set(groupingName, [item]);
@@ -194,7 +200,10 @@ const Component = defineComponent({
       return sortMap;
     },
 
-    getSortedResults(sortMap: Map<string, TimingResult[]>, sortType: string) {
+    getSortedResults(
+      sortMap: Map<string, TimingResult[]>,
+      sortType: ColumnType
+    ): TimingResult[] {
       return [...sortMap.values()]
         .map((item) => {
           item.sort(
@@ -218,17 +227,18 @@ const Component = defineComponent({
         .filter((timing) => !filteredMetrics.includes(timing.timing_type));
     },
 
-    // Handles all the filtering from checkboxes and selects
+    // Handles all the filtering and sorting from checkboxes and selects
     processResults() {
-      // Display names differ from data name.
-      // For display we use display_name, for sorting and filtering we use the raw data name.
-      // Can these sort types be computed?
       const timingsArr = Object.entries(this.timings);
-      const sortType1 = this.getSortType(
+
+      const metricFrameworkSortType = this.getSortType(
         timingsArr,
         this.metricFrameworkSelectType
       );
-      const sortType2 = this.getSortType(timingsArr, this.timingSelectType);
+      const TimingsSortType = this.getSortType(
+        timingsArr,
+        this.timingSelectType
+      );
 
       const timingResults =
         this.throttledSelectType === "No throttle"
@@ -236,8 +246,11 @@ const Component = defineComponent({
           : this.defaultTimingResults4x;
 
       this.processedTimingResults = this.getSortedResults(
-        this.getSortMap(this.getFilteredTimings(timingResults), sortType1),
-        sortType2
+        this.getSortMap(
+          this.getFilteredTimings(timingResults),
+          metricFrameworkSortType
+        ),
+        TimingsSortType
       );
     },
   },
@@ -264,7 +277,11 @@ const Component = defineComponent({
   },
 
   computed: {
-    checkboxes(): { name: string; filteredArr: string[]; typeArr: string[] }[] {
+    filterCheckboxes(): {
+      name: string;
+      filteredArr: string[];
+      typeArr: string[];
+    }[] {
       return [
         {
           name: "metric",
@@ -280,20 +297,20 @@ const Component = defineComponent({
     },
     sortSelects(): {
       name: string;
-      options: string[];
+      options: ColumnType[];
       label: string;
-      sortType: string;
+      sortType: ColumnType;
     }[] {
       return [
         {
           name: "metricFrameworkSelectType",
-          options: this.sort1Options,
+          options: this.metricFrameworkSortOptions,
           label: "Sort By",
           sortType: this.metricFrameworkSelectType,
         },
         {
           name: "timingSelectType",
-          options: this.sort2Options,
+          options: this.timingTypeSortOptions,
           label: "Then",
           sortType: this.timingSelectType,
         },
