@@ -3,7 +3,7 @@
 // https://github.com/cypress-io/cypress/issues/1152
 /// <reference types="cypress" />
 
-// can't use array methods in cypress with my config for some reason.
+// can't use newer array methods in cypress with my config for some reason.
 // expect(metricNames.slice(0, 5).every((name) => name === metricNames[0])).to.be.true;
 
 import { Pages } from '../../../src/router/pages';
@@ -92,6 +92,25 @@ describe('Sorting and Filtering', () => {
 				expect(isRemoved(cells, 'clear-k')).to.be.true;
 				expect(isRemoved(cells, 'ten-k')).to.be.false;
 				expect(cells).to.have.length(24);
+			});
+	});
+	it(`It changes by throttle type`, () => {
+		let firstUnthrottledCell = '';
+		let lastUnthrottledCell = '';
+
+		cy.visit(Comparison.path);
+		cy.get(`[data-cy=TotalDur]`)
+			.then(getCells)
+			.then((cells) => {
+				firstUnthrottledCell = cells[0];
+				lastUnthrottledCell = cells[cells.length - 1];
+				cy.get(`[data-cy=throttledSelectType]`).select('4x slowdown');
+				cy.get(`[data-cy=TotalDur]`)
+					.then(getCells)
+					.then((cells) => {
+						expect(parseFloat(firstUnthrottledCell)).to.be.lessThan(parseFloat(cells[0]));
+						expect(parseFloat(lastUnthrottledCell)).to.be.lessThan(parseFloat(cells[cells.length - 1]));
+					});
 			});
 	});
 });
