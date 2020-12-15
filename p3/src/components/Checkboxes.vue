@@ -5,6 +5,7 @@
         {{ type }}
       </label>
       <input
+        :data-cy="type"
         :id="type"
         v-on:change="(e) => handleCheckbox(e, name)"
         :name="type"

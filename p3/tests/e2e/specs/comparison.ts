@@ -8,14 +8,6 @@
 
 import { Pages } from '../../../src/router/pages';
 const { Comparison } = Pages;
-const slices = [
-	[0, 5],
-	[6, 11],
-	[12, 17],
-	[18, 23],
-	[24, 29],
-	[30, 35],
-];
 
 describe('Sorting and Filtering', () => {
 	it(`It sorts by metrics`, () => {
@@ -64,45 +56,107 @@ describe('Sorting and Filtering', () => {
 			.then(getCells)
 			.then(timingSortAssertions);
 	});
+
+	it(`It filters by framework`, () => {
+		cy.visit(Comparison.path);
+		cy.get(`[data-cy=react]`).uncheck();
+		cy.get(`[data-cy=TimingFramework]`)
+			.then(getCells)
+			.then((cells) => {
+				expect(isRemoved(cells, 'react')).to.be.true;
+			});
+
+		cy.get(`[data-cy=vue]`).uncheck();
+		cy.get(`[data-cy=TimingFramework]`)
+			.then(getCells)
+			.then((cells) => {
+				expect(isRemoved(cells, 'vue')).to.be.true;
+				expect(isRemoved(cells, 'rust-fel')).to.be.false;
+				expect(cells).to.have.length(24);
+			});
+	});
+
+	it(`It filters by metric`, () => {
+		cy.visit(Comparison.path);
+		cy.get(`[data-cy=k]`).uncheck();
+		cy.get(`[data-cy=TimingType]`)
+			.then(getCells)
+			.then((cells) => {
+				expect(isRemoved(cells, 'k')).to.be.true;
+			});
+
+		cy.get(`[data-cy=clear-k]`).uncheck();
+		cy.get(`[data-cy=TimingType]`)
+			.then(getCells)
+			.then((cells) => {
+				expect(isRemoved(cells, 'clear-k')).to.be.true;
+				expect(isRemoved(cells, 'ten-k')).to.be.false;
+				expect(cells).to.have.length(24);
+			});
+	});
 });
 
-function timingSortAssertions(timings: string[]) {
-	for (let i = 0; i < slices.length; i++) {
-		expect(helpItrTimings(slices[i][0], slices[i][1], timings)).to.be.true;
-	}
-}
-
-function metricFrameworkSortAssertions(metricNames: string[]) {
-	expect(metricNames).to.have.length(36);
-
-	for (let i = 0; i < slices.length; i++) {
-		expect(helpItrMetricFramework(slices[i][0], slices[i][1], metricNames)).to.be.true;
-	}
-}
-
-function getCells(tableDataCells: JQuery<HTMLElement>) {
-	const cells = [...tableDataCells];
-	const names = [];
-	for (let i = 0; i < cells.length; i++) {
-		names.push(cells[i].innerHTML);
-	}
-	return names;
-}
-
-function helpItrMetricFramework(iterStart: number, iterEnd: number, arr: string[]) {
-	for (let i = iterStart; i <= iterEnd; i++) {
-		// Can I make a predicate here?
-		if (arr[iterStart] !== arr[i]) {
+function isRemoved(arr: string[], filterItem: string) {
+	for (let i = 0; i < arr.length; i++) {
+		if (arr[i] === filterItem) {
 			return false;
 		}
 	}
 	return true;
 }
-function helpItrTimings(iterStart: number, iterEnd: number, arr: string[]) {
-	for (let i = iterStart; i <= iterEnd; i++) {
-		// Can I make a predicate here?
-		if (i < iterEnd) {
-			console.log(arr[i], arr[i + 1]);
+
+function timingSortAssertions(timings: string[]) {
+	const slicesArr = createSlices(timings, 6);
+	for (let i = 0; i < slicesArr.length; i++) {
+		expect(isSortedByNumber(slicesArr[i])).to.be.true;
+	}
+}
+
+function metricFrameworkSortAssertions(metricNames: string[]) {
+	const slicesArr = createSlices(metricNames, 6);
+	expect(metricNames).to.have.length(36);
+
+	for (let i = 0; i < slicesArr.length; i++) {
+		expect(isSortedByString(slicesArr[i])).to.be.true;
+	}
+}
+
+function createSlices(arr: string[], len: number): string[][] {
+	const arrOfArrs: string[][] = [];
+	let temp = [];
+
+	for (let i = 0; i < arr.length; i++) {
+		temp.push(arr[i]);
+		if (i > 0 && (i + 1) % len === 0) {
+			arrOfArrs.push(temp);
+			temp = [];
+		}
+	}
+
+	return arrOfArrs;
+}
+
+function getCells(tableDataCells: JQuery<HTMLElement>): string[] {
+	const cells = [...tableDataCells];
+	const data = [];
+	for (let i = 0; i < cells.length; i++) {
+		data.push(cells[i].innerHTML);
+	}
+	return data;
+}
+
+function isSortedByString(arr: string[]) {
+	for (let i = 0; i < arr.length; i++) {
+		if (arr[0] !== arr[i]) {
+			return false;
+		}
+	}
+	return true;
+}
+
+function isSortedByNumber(arr: string[]) {
+	for (let i = 0; i < arr.length; i++) {
+		if (i < arr.length) {
 			if (parseFloat(arr[i]) > parseFloat(arr[i + 1])) {
 				return false;
 			}
