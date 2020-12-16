@@ -47,13 +47,13 @@
 
 ## Outside resources
 
-[Vue documentation](https://v3.vuejs.org/)
-[Typescript documentation](https://www.typescriptlang.org/)
-[MDN](https://developer.mozilla.org/en-US/)
-[Cypress documentation](https://www.cypress.io/)
-[Vuex documentation](https://vuex.vuejs.org/)
-[Validator JS documentation](https://github.com/mikeerickson/validatorjs)
-[MDN HTTP Cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies)
+- [Vue documentation](https://v3.vuejs.org/)
+- [Typescript documentation](https://www.typescriptlang.org/)
+- [MDN](https://developer.mozilla.org/en-US/)
+- [Cypress documentation](https://www.cypress.io/)
+- [Vuex documentation](https://vuex.vuejs.org/)
+- [Validator JS documentation](https://github.com/mikeerickson/validatorjs)
+- [MDN HTTP Cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies)
 
 ## Functionality reserved for users
 
