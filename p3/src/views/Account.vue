@@ -22,9 +22,16 @@
           required
         />
         <label>Email </label
-        ><input autocomplete="email" v-model="email" type="text" required />
+        ><input
+          data-cy="email"
+          autocomplete="email"
+          v-model="email"
+          type="text"
+          required
+        />
         <label>Password</label
         ><input
+          data-cy="password"
           :autocomplete="
             status !== 'Login' ? 'new-password' : 'current-password'
           "
@@ -32,9 +39,11 @@
           type="password"
           required
         />
-        <button type="submit" @click="authenticate">{{ status }}</button>
+        <button data-cy="submit" type="submit" @click="authenticate">
+          {{ status }}
+        </button>
       </form>
-      <button v-else @click="logout">Logout</button>
+      <button data-cy="logout" v-else @click="logout">Logout</button>
     </div>
   </div>
 </template>
